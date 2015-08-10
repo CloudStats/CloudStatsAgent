@@ -18,7 +18,11 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 $:.unshift File.join(File.join(File.dirname(__FILE__), *%w[..]), 'src')
 
-require_relative '../src/cloudstats/logger'
+require_relative '../lib/cloudstats/helpers/object.rb'
+require_relative '../lib/cloudstats/helpers/os.rb'
+require_relative '../lib/cloudstats/config.rb'
+require_relative '../lib/cloudstats/initializers/logger.rb'
+require_relative '../lib/cloudstats/reloader.rb'
 $logger = CloudStats::Logger.new
 
 RSpec.configure do |config|

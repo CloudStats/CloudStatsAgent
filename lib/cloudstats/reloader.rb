@@ -21,7 +21,7 @@ module CloudStats
     end
 
     def self.reload
-      @@dependencies.each do |file|
+      dependencies.each do |file|
         load file
       end
     end
@@ -32,9 +32,12 @@ module CloudStats
 
     private
 
-    def self.add_dependency(file)
+    def self.dependencies
       @@dependencies ||= []
-      @@dependencies << file
+    end
+
+    def self.add_dependency(file)
+      dependencies << file
       load file
     end
   end

@@ -14,7 +14,7 @@ module CloudStats
       latest_version = get_latest_version
       if Gem::Version.new(latest_version) <= Gem::Version.new(current_version)
         $logger.info 'Already running the last version'
-        return
+        return false
       end
 
       $logger.info "Latest version: #{latest_version}"
@@ -30,6 +30,7 @@ module CloudStats
         $logger.info "Restarting agent.."
         exec "/etc/init.d/cloudstats-agent", "restart"
       end
+      true
     end
 
     private
