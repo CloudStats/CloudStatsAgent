@@ -1,0 +1,11 @@
+.DS_Store
+packaging/vendor
+packaging/*.tar.gz
+out/
+Makefile
+server.key
+cloudstats.log
+.project_vimrc
+bin/
+developer-config.yml
+config.yml

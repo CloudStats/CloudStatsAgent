@@ -1,0 +1,71 @@
+#!/bin/bash
+#
+# Description: CloudStats Monitoring installer script
+#
+#
+
+# installation folder
+install_dir="/home/cloudstats_agent"
+echo "CloudStats agent will be installed in: " $install_dir
+
+if [ -d "$install_dir" ]; then
+  echo "Removing the old agent"
+  sed -i '/cloudstats/d' /etc/crontab &> /dev/null
+  killall -13 -r 'cloudstats' 2>/dev/null
+  rm -rf $install_dir
+fi
+
+echo "Attempting to install necessary package: iproute2 net-tools"
+if [ -e /etc/debian_version ]
+then
+  apt-get install iproute2 net-tools -y > /dev/null
+fi
+
+if [ -e /etc/redhat-release ]
+then
+  yum install net-tools iproute2 -y > /dev/null
+fi
+
+
+mkdir -p $install_dir
+cd $install_dir
+
+# downloading the package based on arch
+archs=`uname -m`
+echo "Downloading ... "
+
+if [ ${archs} = 'x86_64' ]; then
+  curl -L -O --fail 'https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-agent-latest-linux-x86_64.tar.gz'
+else
+  archs='x86'
+  curl -L -O --fail 'https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-agent-latest-linux-x86.tar.gz'
+fi
+
+# extracting and placing the files in the right location
+echo "Extracting ... "
+tar zxvf cloudstats-agent-latest-linux-$archs.tar.gz --strip-components 1 >/dev/null
+cp init.d/cloudstats-agent /etc/init.d/
+rm -rf cloudstats-agent-latest-linux-$archs.tar.gz
+
+# set permissions and auto start at boot
+echo "Installing ... "
+chmod 755 /etc/init.d/cloudstats-agent
+ if [ -e /etc/debian_version ]
+  then
+    update-rc.d -f cloudstats-agent defaults > /dev/null
+  fi
+
+  if [ -e /etc/redhat-release ]
+  then
+    chkconfig cloudstats-agent on
+  fi
+
+echo "Setting up the account key"
+./cloudstats-agent --setup $1
+
+/etc/init.d/cloudstats-agent start
+
+echo "Installation finished."
+
+echo "Running for the first time"
+./cloudstats-agent --first-time
