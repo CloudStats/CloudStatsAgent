@@ -5,4 +5,5 @@ CloudStats::Sysinfo.plugin :services do
 
   require_process :qmail
   require_process :exim
+  require_process :postfix
 end
