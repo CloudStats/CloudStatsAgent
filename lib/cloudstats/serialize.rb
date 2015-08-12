@@ -29,7 +29,8 @@ module CloudStats
         kernel:          sysinfo[:os][:kernel],
         release:         sysinfo[:os][:name] + " " + sysinfo[:os][:version],
         pending_updates: sysinfo[:os][:pending_updates],
-        hostname:        sysinfo[:network][:hostname]
+        hostname:        sysinfo[:network][:hostname],
+        processes:       sysinfo[:processes][:all]
       }
     }
   end

@@ -20,6 +20,7 @@ GEM
     jmespath (1.0.2)
       multi_json (~> 1.0)
     multi_json (1.11.2)
+    ps-ruby (0.0.4)
     rspec (3.3.0)
       rspec-core (~> 3.3.0)
       rspec-expectations (~> 3.3.0)
@@ -48,6 +49,7 @@ DEPENDENCIES
   aws-sdk
   bytes_converter
   i18n
+  ps-ruby
   rspec
   rufus-scheduler
   webmock

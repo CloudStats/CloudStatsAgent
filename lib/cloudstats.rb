@@ -5,6 +5,7 @@ require 'json'
 require 'bytes_converter'
 require 'net/http'
 require 'digest'
+require 'ps-ruby'
 
 require_relative './cloudstats/reloader'
 CloudStats::Reloader.watch do

@@ -1,7 +1,8 @@
 CloudStats::Sysinfo.plugin :os do
   os :osx do
     after_sleep do # after_sleep as it takes too much time
-      { pending_updates: `softwareupdate -l`.each_line.grep(/\*/).count }
+      # { pending_updates: `softwareupdate -l`.each_line.grep(/\*/).count }
+      {}
     end
   end
 
