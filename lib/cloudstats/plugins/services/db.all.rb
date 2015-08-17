@@ -4,5 +4,5 @@ CloudStats::Sysinfo.plugin :services do
   service :db
 
   require_process :mysql
-  require_process :pg, :postgres
+  require_process :postgres
 end

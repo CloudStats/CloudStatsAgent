@@ -9,3 +9,6 @@ cloudstats.log
 bin/
 developer-config.yml
 config.yml
+cloudstats-agent
+reset-key
+version
