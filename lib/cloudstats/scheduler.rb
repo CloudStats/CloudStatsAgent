@@ -8,7 +8,7 @@ module CloudStats
       $logger.info "[DONE]"
 
       $logger.info "Publishing..."
-      CloudStats.publish(info)
+      $logger.info "Response: #{CloudStats.publish(info).body}"
       $logger.info "[DONE]"
     end
 
