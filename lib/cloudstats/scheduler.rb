@@ -22,7 +22,7 @@ module CloudStats
 
       $logger.info 'Starting the CloudStats agent'
 
-      scheduler.every '15s' do
+      scheduler.every '1m' do
         CloudStats.perform_update
       end
 
