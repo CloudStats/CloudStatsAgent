@@ -13,6 +13,13 @@ class ::Array
     end
   end
 
+  def sum_field(field)
+    result = 0
+    inject result do |acc, val|
+      acc + val[field]
+    end
+  end
+
   def map_to_hash
     Hash[map { |x| yield x }]
   end
