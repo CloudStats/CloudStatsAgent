@@ -30,6 +30,9 @@ module CloudStats
         Updater.new.update
       end
 
+      scheduler.every '10m' do
+        CloudStats::Backup.new.perform
+      end
       scheduler.join
     end
 
