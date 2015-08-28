@@ -40,6 +40,8 @@ begin
   when '--update'
     CloudStats::Updater.new.update
 
+  when '--backup'
+    CloudStats::Backup.new.perform
   when '--first-time'
     CloudStats.perform_update
 
