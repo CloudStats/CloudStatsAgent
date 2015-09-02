@@ -3,7 +3,7 @@ require 'open-uri'
 module CloudStats
   class Updater
     def initialize(options={})
-      repo = ENV['REPO'] || 'agent'
+      repo = ENV['REPO'] || Config[:repo] || 'agent'
       @update_server = "https://cloudstatsstorage.blob.core.windows.net/#{repo}/"
       @app_dir = Config[:install_path]
     end
