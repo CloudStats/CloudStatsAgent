@@ -8,8 +8,9 @@ module CloudStats
 
     def perform
       ::Backup::Logger.start!
-
-      ::Backup::Model.find_by_trigger('cloudstats_backup').first.perform!
+      ::Backup::Model.all.each do |m|
+        ::Backup::Model.find_by_trigger(m.trigger).first.perform!
+      end
     end
   end
 end
