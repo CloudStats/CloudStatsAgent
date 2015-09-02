@@ -5,6 +5,8 @@ module CloudStats
   class Backup
     def initialize
       @config_dir = "#{File.expand_path(File.dirname(__FILE__))}/../../Backup"
+
+      Dir.mkdir @config_dir unless File.exists?(@config_dir)
       download_config
 
       $logger.info "Initializing the backup"
