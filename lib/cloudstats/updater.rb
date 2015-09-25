@@ -13,6 +13,8 @@ module CloudStats
       $logger.info "Current version: #{current_version}"
 
       latest_version = get_latest_version
+      $logger.info "Latest version: #{latest_version}"
+
       if Gem::Version.new(latest_version) <= Gem::Version.new(current_version)
         $logger.info 'Already running the last version'
         return false
