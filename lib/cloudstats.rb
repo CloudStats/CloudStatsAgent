@@ -22,9 +22,9 @@ begin
     require_tree './plugins'
   end
 
-  puts ""
-  puts "CloudStats Agent v#{Config[:version]}"
-  puts ""
+  $logger.info ""
+  $logger.info "CloudStats Agent v#{Config[:version]}"
+  $logger.info ""
 
   if $enable_repl
     require_relative 'cloudstats/repl/repl'

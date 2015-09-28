@@ -181,9 +181,10 @@ end
 
 def azure_upload(local_file, remote_file = nil)
   remote_file ||= local_file
+  repo = ENV['REPO'] || 'agent007'
 
   puts "Uploading the #{local_file} blob..."
-  p `azure storage blob upload -q #{local_file} agent #{remote_file}`
+  p `azure storage blob upload -q #{local_file} #{repo} #{remote_file}`
 end
 
 # / UTILS
