@@ -23,6 +23,7 @@ CloudStats::Sysinfo.plugin :processes do
         .select { |p| p[:ppid] == ppid }
         .map do |pr|
           children = acc(list, pr[:pid])
+          pr[:children]  = children
           acc_fields.each do |field|
             pr[field] = pr[field].to_i + children.sum_field(field)
           end
@@ -31,10 +32,24 @@ CloudStats::Sysinfo.plugin :processes do
     end
 
     tree = acc(psparse, "1")
-    tree.each do |pr|
-      pr[:pretty_command] = File.basename(pr[:command].split("-").first)
-    end
     tree
+  end
+  
+  def psflatten
+    pstree
+      .map do |pr|
+        children = pr.delete(:children)
+        if /\Ainit\s?(\[\d+\])?\Z/ =~ pr[:command]
+          children
+        else
+          pr
+        end
+      end
+      .flatten
+      .map do |pr|
+        pr[:pretty_command] = File.basename(pr[:command].split("-").first || "")
+        pr
+      end
   end
 
   run do
@@ -42,7 +57,7 @@ CloudStats::Sysinfo.plugin :processes do
     {
       count: @ps.each_line.count - 1,
       ps: @ps,
-      all: pstree
+      all: psflatten
     }
   end
 end
