@@ -11,4 +11,5 @@ group :development, :test do
   gem 'rspec'
   gem 'webmock'
   gem 'aws-sdk'
+  gem 'ripl'
 end

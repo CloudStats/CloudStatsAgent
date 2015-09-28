@@ -15,6 +15,12 @@ s3 = Aws::S3::Resource.new(region: 'eu-west-1')
 NATIVES = {
 }
 
+desc "REPL with plugins"
+task :repl do
+  $enable_repl = true
+  require_relative 'lib/cloudstats'
+end
+
 desc "Package your app"
 task :package => ['package:linux:x86', 'package:linux:x86_64', 'package:osx']
 

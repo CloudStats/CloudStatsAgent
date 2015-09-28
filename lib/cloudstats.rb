@@ -26,6 +26,11 @@ begin
   puts "CloudStats Agent v#{Config[:version]}"
   puts ""
 
+  if $enable_repl
+    require_relative 'cloudstats/repl/repl'
+    exit
+  end
+
   case ARGV[0]
 
   when '--setup'
@@ -55,7 +60,9 @@ begin
 
   end
 rescue Exception => e
-  $logger.fatal "#{e.class.name}: #{e.message}"
-  Airbrake.catch(e)
+  unless $enable_repl
+    $logger.fatal "#{e.class.name}: #{e.message}"
+    Airbrake.catch(e)
+  end
   raise e
 end

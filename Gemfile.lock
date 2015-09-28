@@ -11,6 +11,8 @@ GEM
       jmespath (~> 1.0)
     aws-sdk-resources (2.1.4)
       aws-sdk-core (= 2.1.4)
+    bond (0.5.1)
+    bond (0.5.1-java)
     builder (3.2.2)
     bytes_converter (0.0.5)
     crack (0.4.2)
@@ -21,6 +23,8 @@ GEM
       multi_json (~> 1.0)
     multi_json (1.11.2)
     ps-ruby (0.0.4)
+    ripl (0.7.1)
+      bond (~> 0.5.1)
     rspec (3.3.0)
       rspec-core (~> 3.3.0)
       rspec-expectations (~> 3.3.0)
@@ -50,6 +54,7 @@ DEPENDENCIES
   bytes_converter
   i18n
   ps-ruby
+  ripl
   rspec
   rufus-scheduler
   webmock
