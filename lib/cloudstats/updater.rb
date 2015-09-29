@@ -3,7 +3,7 @@ require 'open-uri'
 module CloudStats
   class Updater
     def initialize(options={})
-      repo = ENV['REPO'] || PublicConfig[:repo] || 'agent'
+      repo = ENV['REPO'] || PublicConfig['repo'] || 'agent'
       @update_server = "https://cloudstatsstorage.blob.core.windows.net/#{repo}/"
       @app_dir = Config[:install_path]
     end
@@ -13,6 +13,8 @@ module CloudStats
       $logger.info "Current version: #{current_version}"
 
       latest_version = get_latest_version
+      $logger.info "Latest version: #{latest_version}"
+
       if Gem::Version.new(latest_version) <= Gem::Version.new(current_version)
         $logger.info 'Already running the last version'
         return false
