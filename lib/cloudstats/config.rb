@@ -25,6 +25,5 @@ Config = {
 }
 
 Config[:public_config_path] = "#{Config[:install_path]}/config.yml"
-Config[:backup_bin_path] = "#{Config[:install_path]}/config.yml"
 
 PublicConfig = YAML.load(File.read(Config[:public_config_path])) rescue {}
