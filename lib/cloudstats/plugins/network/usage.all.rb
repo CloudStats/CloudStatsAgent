@@ -1,26 +1,19 @@
 CloudStats::Sysinfo.plugin :network do
-  def format(rxs, txs)
-  end
-
   os :linux do
     def fetch
-      lines = `ip -s link`.each_line.map(&:downcase)
+      lines = `ip -s link`.each_line.map(&:downcase)  
       ifaces = lines.map(&:split)
       rxlines = ifaces.each_with_index.select { |x, i| x[0] =~ /^rx/ }.map { |x, i| i + 1 }
       txlines = ifaces.each_with_index.select { |x, i| x[0] =~ /^tx/ }.map { |x, i| i + 1 }
 
-      # reject loopback
-      rejects = lines
-        .map { |x| /^\d+[:]\s*[^\s]+[:]\s*[<](.*)[>]/.match(x) }
+      lines
+        .map { |x| /^\d+[:]\s*([^\s]+)[:]\s*[<](.*)[>]/.match(x) }
         .reject(&:nil?)
-        .map { |x| x[1].split(',').include?('loopback') }
-      rxlines = rxlines.zip(rejects).reject(&:last).map(&:first)
-      txlines = txlines.zip(rejects).reject(&:last).map(&:first)
-
-      {
-        rx: rxlines.map { |i| ifaces[i][0].to_f }.sum,
-        tx: txlines.map { |i| ifaces[i][0].to_f }.sum
-      }
+        .zip(rxlines, txlines)
+        .reject { |match, rx, tx| match[2].split(',').include?('loopback') }
+        .map_to_hash do |match, rx, tx|
+          [match[1], [ifaces[rx][0].to_f, ifaces[tx][0].to_f]]
+        end
     end
   end
 
@@ -41,9 +34,14 @@ CloudStats::Sysinfo.plugin :network do
         ]
       end
 
-      (rx, tx) = table.values.sum2
-      { rx: rx, tx: tx }
+      table
     end
+  end
+
+  def format(iface, present, past)
+    rx = (present[0] - past[0]) / Config[:timeout]
+    tx = (present[1] - past[1]) / Config[:timeout]
+    [iface, [rx, 0].max, [tx, 0].max]
   end
 
   before_sleep do
@@ -51,10 +49,14 @@ CloudStats::Sysinfo.plugin :network do
   end
 
   after_sleep do
-    @end = fetch
+    values = fetch.map do |iface, present|
+      past = @start[iface]
+      format(iface, present, past)
+    end
     {
-      rx_speed: [0, (@end[:rx] - @start[:rx]) / Config[:timeout]].max,
-      tx_speed: [0, (@end[:tx] - @start[:tx]) / Config[:timeout]].max
+      all: values,
+      rx_speed: values.map { |x| x[1] }.sum,
+      tx_speed: values.map { |x| x[2] }.sum
     }
   end
 end

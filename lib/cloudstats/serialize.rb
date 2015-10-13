@@ -31,7 +31,8 @@ module CloudStats
         pending_updates: sysinfo[:os][:pending_updates],
         hostname:        sysinfo[:network][:hostname],
         processes:       sysinfo[:processes][:all],
-        disks:           sysinfo[:disk][:all]
+        disks:           sysinfo[:disk][:all],
+        interfaces:      sysinfo[:network][:all]
       }
     }
   end

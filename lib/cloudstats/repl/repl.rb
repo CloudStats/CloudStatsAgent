@@ -14,7 +14,7 @@ def run_plugins(path, *extra_path)
 
   output = plugs.inject({}) do |agg, plug|
     output = plug.pass1 if plug.pass1?
-    output = plug.pass1 if plug.pass2?
+    output = plug.pass2 if plug.pass2?
     agg.deep_merge!(output)
   end
 
