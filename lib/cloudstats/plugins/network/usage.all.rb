@@ -7,7 +7,7 @@ CloudStats::Sysinfo.plugin :network do
       rxlines = ifaces.each_with_index.select { |x, i| x[0] =~ /^rx/ }.map { |x, i| i + 1 }
       txlines = ifaces.each_with_index.select { |x, i| x[0] =~ /^tx/ }.map { |x, i| i + 1 }
 
-      skip_ifaces = %w(loopback pointtopoint)
+      skip_ifaces = %w(loopback pointopoint)
 
       lines
         .map { |x| /^\d+[:]\s*([^\s]+)[:]\s*[<](.*)[>]/.match(x) }
