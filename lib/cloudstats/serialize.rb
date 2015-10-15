@@ -32,7 +32,8 @@ module CloudStats
         hostname:        sysinfo[:network][:hostname],
         processes:       sysinfo[:processes][:all],
         disks:           sysinfo[:disk][:all],
-        interfaces:      sysinfo[:network][:all]
+        interfaces:      sysinfo[:network][:all],
+        vms:             sysinfo[:openvz]
       }
     }
   end
