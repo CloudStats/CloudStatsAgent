@@ -7,13 +7,19 @@ require_relative 'lib/cloudstats/config'
 
 PACKAGE_NAME = "cloudstats-agent"
 VERSION = Config[:version]
-TRAVELING_RUBY_VERSION = "20150210-2.1.5"
+TRAVELING_RUBY_VERSION = "20150715-2.2.2"
 OUT_DIR = "out"
 
 s3 = Aws::S3::Resource.new(region: 'eu-west-1')
 
 NATIVES = {
 }
+
+desc "REPL with plugins"
+task :repl do
+  $enable_repl = true
+  require_relative 'lib/cloudstats'
+end
 
 desc "Package your app"
 task :package => ['package:linux:x86', 'package:linux:x86_64', 'package:osx']
@@ -76,9 +82,9 @@ namespace :package do
 
   desc "Install gems to local directory"
   task :bundle_install do
-    if RUBY_VERSION !~ /^2\.1\./
-      abort "You can only 'bundle install' using Ruby 2.1, because that's what Traveling Ruby uses."
-    end
+    # if RUBY_VERSION !~ /^2\.1\./
+    #   abort "You can only 'bundle install' using Ruby 2.1, because that's what Traveling Ruby uses."
+    # end
     sh "rm -rf packaging/tmp"
     sh "mkdir -p packaging/tmp"
     sh "cp Gemfile Gemfile.lock packaging/tmp/"

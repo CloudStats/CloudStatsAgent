@@ -2,6 +2,10 @@ module CloudStats
   class Sysinfo < Hash
     @@plugins = []
 
+    def self.plugins_by_path(path)
+      @@plugins.select { |p| p.path == path }
+    end
+
     def self.load
       info = Sysinfo.new
       pass1 = @@plugins.select(&:pass1?)
@@ -31,11 +35,6 @@ module CloudStats
       plugin = Plugin.new(path)
       plugin.instance_eval(&block)
       @@plugins += [plugin]
-    end
-
-    def deep_merge!(second)
-      merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
-      self.merge!(second, &merger)
     end
   end
 end

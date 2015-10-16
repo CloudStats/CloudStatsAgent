@@ -222,6 +222,8 @@ GEM
       json (>= 1.7.7)
     polyglot (0.3.3)
     ps-ruby (0.0.4)
+    ripl (0.7.1)
+      bond (~> 0.5.1)
     rspec (3.3.0)
       rspec-core (~> 3.3.0)
       rspec-expectations (~> 3.3.0)
@@ -277,6 +279,7 @@ DEPENDENCIES
   bytes_converter
   i18n
   ps-ruby
+  ripl
   rspec
   rufus-scheduler
   webmock

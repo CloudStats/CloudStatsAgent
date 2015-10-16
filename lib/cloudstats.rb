@@ -22,9 +22,14 @@ begin
     require_tree './plugins'
   end
 
-  puts ""
-  puts "CloudStats Agent v#{Config[:version]}"
-  puts ""
+  $logger.info ""
+  $logger.info "CloudStats Agent v#{Config[:version]}"
+  $logger.info ""
+
+  if $enable_repl
+    require_relative 'cloudstats/repl/repl'
+    exit
+  end
 
   case ARGV[0]
 
@@ -58,7 +63,9 @@ begin
 
   end
 rescue Exception => e
-  $logger.fatal "#{e.class.name}: #{e.message}"
-  Airbrake.catch(e)
+  unless $enable_repl
+    $logger.fatal "#{e.class.name}: #{e.message}"
+    Airbrake.catch(e)
+  end
   raise e
 end

@@ -20,11 +20,10 @@ Config = {
 
   # agent
   install_path:     ENV['INSTALL_PATH'] || '/home/cloudstats_agent',
-  version:          '1.2.0.4',
+  version:          '1.2.1.8',
   restart_required: true
 }
 
 Config[:public_config_path] = "#{Config[:install_path]}/config.yml"
-Config[:backup_bin_path] = "#{Config[:install_path]}/config.yml"
 
 PublicConfig = YAML.load(File.read(Config[:public_config_path])) rescue {}

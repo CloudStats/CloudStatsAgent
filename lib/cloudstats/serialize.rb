@@ -30,7 +30,9 @@ module CloudStats
         release:         sysinfo[:os][:name] + " " + sysinfo[:os][:version],
         pending_updates: sysinfo[:os][:pending_updates],
         hostname:        sysinfo[:network][:hostname],
-        processes:       sysinfo[:processes][:all]
+        processes:       sysinfo[:processes][:all],
+        disks:           sysinfo[:disk][:all],
+        interfaces:      sysinfo[:network][:all]
       }
     }
   end

@@ -1,4 +1,8 @@
 CloudStats::Sysinfo.plugin :processes do
+  HighOrderProcesses = [
+    'bash', 'zsh', 'fish', 'sh', 'ksh', 'tmux', 'screen', 'sudo'
+  ].map { |x| [x, "-#{x}"] }.flatten
+
   def psparse
     `ps -eo pid,ppid,rss,pcpu,pmem,command`
       .split("\n")[1..-1]
@@ -15,7 +19,7 @@ CloudStats::Sysinfo.plugin :processes do
       end
   end
 
-  def pstree
+ def pstree
     def acc(list, ppid)
       acc_fields = [:rss, :cpu, :mem]
 
@@ -23,6 +27,8 @@ CloudStats::Sysinfo.plugin :processes do
         .select { |p| p[:ppid] == ppid }
         .map do |pr|
           children = acc(list, pr[:pid])
+          pr[:children] = children
+          pr[:exec] = File.basename(pr[:command].split.first || "").downcase
           acc_fields.each do |field|
             pr[field] = pr[field].to_i + children.sum_field(field)
           end
@@ -31,18 +37,33 @@ CloudStats::Sysinfo.plugin :processes do
     end
 
     tree = acc(psparse, "1")
-    tree.each do |pr|
-      pr[:pretty_command] = File.basename(pr[:command].split("-").first)
-    end
     tree
   end
+  
+  def psflatten(tree)
+    tree
+      .map do |pr|
+        children = pr.delete(:children)
+        if children.size == 0
+          pr
+        elsif /\Ainit\s?(\[\d+\])?\Z/ =~ pr[:command]
+          psflatten(children)
+        elsif HighOrderProcesses.include?(pr[:exec])
+          psflatten(children)
+        else
+          pr
+        end
+      end
+      .flatten
+  end
+
 
   run do
     @ps = `ps -eo user,pid,ppid,rss,vsize,pcpu,pmem,command`
     {
       count: @ps.each_line.count - 1,
       ps: @ps,
-      all: pstree
+      all: psflatten(pstree)
     }
   end
 end

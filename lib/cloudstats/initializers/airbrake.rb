@@ -1,9 +1,9 @@
 require 'airbrake'
 
 Airbrake.configure do |config|
-  config.api_key = 'b25ddd75ab51914e86f8229e53cdea44'
-  config.host    = '208.52.189.15'
-  config.port    = 3001
+  config.api_key = '81e6c1f54c95aa51f1898e49182482ba'
+  config.host    = '40.127.109.43'
+  config.port    = 3000
   config.secure  = config.port == 443
 end
 
