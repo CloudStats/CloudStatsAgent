@@ -3,7 +3,7 @@ GEM
   specs:
     CFPropertyList (2.3.1)
     addressable (2.3.5)
-    airbrake (4.3.1)
+    airbrake (4.3.2)
       builder
       multi_json
     atomic (1.1.14)
