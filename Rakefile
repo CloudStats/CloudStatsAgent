@@ -13,6 +13,7 @@ OUT_DIR = "out"
 s3 = Aws::S3::Resource.new(region: 'eu-west-1')
 
 NATIVES = {
+  'nokogiri': '1.6.6.2'
 }
 
 desc "REPL with plugins"

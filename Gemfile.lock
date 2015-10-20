@@ -19,7 +19,7 @@ GEM
       mail (> 2.2.5)
       mime-types
       xml-simple
-    backup (4.2.2)
+    backup (4.1.12)
       CFPropertyList (= 2.3.1)
       addressable (= 2.3.5)
       atomic (= 1.1.14)
@@ -276,9 +276,10 @@ PLATFORMS
 DEPENDENCIES
   airbrake
   aws-sdk
-  backup (~> 4.1)
+  backup (~> 4.1.1)
   bytes_converter
   i18n
+  nokogiri (= 1.6.6.2)
   ps-ruby
   ripl
   rspec
