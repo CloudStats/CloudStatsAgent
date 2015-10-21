@@ -3,20 +3,23 @@ require 'net/http'
 
 module CloudStats
   class Backup
+    include Singleton
+
     def initialize
       @config_dir = "#{File.expand_path(File.dirname(__FILE__))}/../../Backup"
 
       Dir.mkdir @config_dir unless File.exists?(@config_dir)
+      ::Backup::Logger.start!
+    end
+
+    def perform
       download_config
 
       $logger.info "Initializing the backup"
       ::Backup::Model.all.clear
       ::Backup::Config.load(root_path: @config_dir)
-    end
 
-    def perform
       $logger.info "Performing the backup"
-      ::Backup::Logger.start!
       ::Backup::Model.all.each do |m|
         ::Backup::Model.find_by_trigger(m.trigger).first.perform!
       end

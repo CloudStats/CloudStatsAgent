@@ -31,7 +31,7 @@ module CloudStats
       end
 
       scheduler.every '10m' do
-        CloudStats::Backup.new.perform
+        CloudStats::Backup.instance.perform
       end
       scheduler.join
     end
