@@ -10,6 +10,7 @@ module CloudStats
       download_config
 
       $logger.info "Initializing the backup"
+      ::Backup::Model.all.clear
       ::Backup::Config.load(root_path: @config_dir)
     end
 
