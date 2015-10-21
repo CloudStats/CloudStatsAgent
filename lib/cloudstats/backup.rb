@@ -1,5 +1,6 @@
 require 'backup'
 require 'net/http'
+require 'singleton'
 
 module CloudStats
   class Backup
