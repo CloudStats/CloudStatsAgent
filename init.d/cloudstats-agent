@@ -48,7 +48,7 @@ start() {
     return 0
   fi
   printf "%-50s%s" "Starting $prog: " ''
-  $progpath > /dev/null 2>&1 &
+  ENV=production $progpath > /dev/null 2>&1 &
 
   # save pid to file
   echo $! > $pidfile

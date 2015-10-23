@@ -20,7 +20,7 @@ Config = {
 
   # agent
   install_path:     ENV['INSTALL_PATH'] || '/home/cloudstats_agent',
-  version:          '1.2.1.26',
+  version:          '1.3.0',
   restart_required: true
 }
 

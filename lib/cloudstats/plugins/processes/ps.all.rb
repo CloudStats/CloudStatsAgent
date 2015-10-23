@@ -44,7 +44,9 @@ CloudStats::Sysinfo.plugin :processes do
     tree
       .map do |pr|
         children = pr.delete(:children)
-        if children.size == 0
+        if /cloudstats/ =~ pr[:command]
+          []
+        elsif children.size == 0
           pr
         elsif /\Ainit\s?(\[\d+\])?\Z/ =~ pr[:command]
           psflatten(children)
