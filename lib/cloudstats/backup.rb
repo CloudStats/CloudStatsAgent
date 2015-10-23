@@ -10,7 +10,6 @@ module CloudStats
       @config_dir = "#{File.expand_path(File.dirname(__FILE__))}/../../Backup"
 
       Dir.mkdir @config_dir unless File.exists?(@config_dir)
-      ::Backup::Logger.start!
     end
 
     def perform
@@ -19,6 +18,7 @@ module CloudStats
       $logger.info "Initializing the backup"
       ::Backup::Model.all.clear
       ::Backup::Config.load(root_path: @config_dir)
+      ::Backup::Logger.clear!
 
       $logger.info "Performing the backup"
       ::Backup::Model.all.each do |m|
