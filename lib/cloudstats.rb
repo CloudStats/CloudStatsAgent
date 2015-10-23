@@ -46,7 +46,7 @@ begin
     CloudStats::Updater.new.update
 
   when '--backup'
-    CloudStats::Backup.new.perform
+    CloudStats::Backup.instance.perform
 
   when '--first-time'
     CloudStats.perform_update
