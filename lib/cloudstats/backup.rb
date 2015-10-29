@@ -13,7 +13,7 @@ module CloudStats
     end
 
     def perform
-      download_config
+      # download_config
 
       $logger.info "Initializing the backup"
       ::Backup::Model.all.clear
@@ -23,6 +23,8 @@ module CloudStats
       $logger.info "Performing the backup"
       ::Backup::Model.all.each do |m|
         ::Backup::Model.find_by_trigger(m.trigger).first.perform!
+
+        m.notifiers.each(&:perform!)
       end
     end
 
