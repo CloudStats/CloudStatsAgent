@@ -13,7 +13,7 @@ module CloudStats
     end
 
     def perform
-      # download_config
+      download_config
 
       $logger.info "Initializing the backup"
       ::Backup::Model.all.clear
