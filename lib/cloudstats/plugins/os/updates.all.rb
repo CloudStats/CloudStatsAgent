@@ -8,7 +8,7 @@ CloudStats::Sysinfo.plugin :os do
 
   os :linux do
     def has?(command)
-      `which #{command} 2> /dev/null`.strip.length > 0
+      OS.has?(command)
     end
 
     def aptget
