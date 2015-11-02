@@ -86,7 +86,7 @@ CloudStats::Sysinfo.plugin :disk do
 
   def disks
     if OS.has?('smartctl')
-      output = `smartctl --scan`
+      output = `smartctl --scan`.lines
       output
         .map(&:split)
         .reject(&:empty?)
