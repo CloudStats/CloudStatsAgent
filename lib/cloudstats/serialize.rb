@@ -33,7 +33,8 @@ module CloudStats
         processes:       sysinfo[:processes][:all],
         disks:           sysinfo[:disk][:all],
         interfaces:      sysinfo[:network][:all],
-        vms:             sysinfo[:openvz]
+        vms:             sysinfo[:openvz],
+        disk_smart:      sysinfo[:disk][:smart]
       }
     }
   end

@@ -1,4 +1,8 @@
 module OS
+  def self.has?(command)
+    `which #{command} 2> /dev/null`.strip.length > 0
+  end
+
   def self.match?(os)
     self.set_marks
     case os
