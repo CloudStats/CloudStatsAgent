@@ -27,17 +27,24 @@ CloudStats::Sysinfo.plugin :disk do
     value >> 32
   end
 
-  def smartctl_query
+  def smartctl_query(dev)
     params = "-H -A "
     params += ATTRIBUTES.keys.map do |attr|
       "-v #{attr},raw48"
     end.join(" ")
-    `smartctl #{params}`
+    `smartctl #{dev} #{params}`
   end
 
   def check_range(value, min, max)
     (min && value < min) || 
       (max && value > max)
+  end
+
+  def overall_healthy?(output)
+    [
+      "SMART overall-health self-assessment test result: PASSED",
+      "SMART Health Status: OK"
+    ].any? { |l| output.include?(l) }
   end
 
   def parse_attribute(fields, attr)
@@ -67,19 +74,29 @@ CloudStats::Sysinfo.plugin :disk do
 
   def parse_smart(dev)
     attr_ids = ATTRIBUTES.keys
-    reports = smartctl_query
-      .lines
-      .map(&:split)
-      .select { |l| l.size == 10 }
-      .select { |l| l.first.to_i != 0 }
-      .select { |l| attr_ids.include?(l.first.to_i) }
-      .map do |fields|
-        attr = ATTRIBUTES[fields.first.to_i]
-        parse_attribute(fields, attr)
-      end
+    output = smartctl_query(dev)
 
-    messages = reports.map { |r| format_message(dev, r) }
-    all_passed = reports.all? { |r| r[:type] == :normal }
+    messages = []
+    all_passed = true
+
+    if overall_healthy?(output)
+      reports = output
+        .lines
+        .map(&:split)
+        .select { |l| l.size == 10 }
+        .select { |l| l.first.to_i != 0 }
+        .select { |l| attr_ids.include?(l.first.to_i) }
+        .map do |fields|
+          attr = ATTRIBUTES[fields.first.to_i]
+          parse_attribute(fields, attr)
+        end
+
+      messages = reports.map { |r| format_message(dev, r) }
+      all_passed = reports.all? { |r| r[:type] == :normal }
+    else
+      messages = [{type: 'critical', message: "SMART doesn't report #{dev} as healthy"}]
+      all_passed = false
+    end
 
     { messages: messages, all_passed: all_passed }
   end
