@@ -17,8 +17,8 @@ module CloudStats
       request.add_field('Content-Type', 'application/json')
       request.body = data.to_json
       response = http.request(request)
-
-      response
+      
+      response.body
     end
   end
 end
