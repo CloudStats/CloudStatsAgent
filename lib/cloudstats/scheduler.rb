@@ -8,7 +8,13 @@ module CloudStats
       $logger.info "[DONE]"
 
       $logger.info "Publishing..."
-      $logger.info "Response: #{CloudStats.publish(info).body}"
+      response = CloudStats.publish(info)
+      if response['ok']
+        $logger.info "Response: #{response}"
+      else
+        $logger.error "There was an error posting the status"
+        $logger.error "Response: #{response}"
+      end
       $logger.info "[DONE]"
     end
 
