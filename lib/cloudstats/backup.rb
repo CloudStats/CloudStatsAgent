@@ -13,7 +13,7 @@ module CloudStats
     end
 
     def perform
-      download_config
+      download_config unless ENV['DONT_DOWNLOAD_BACKUP_CONFIG']
 
       $logger.info "Initializing the backup"
       ::Backup::Model.all.clear
