@@ -27,7 +27,7 @@ module CloudStats
       download(current_package_name)
       install(current_package_name)
       Reloader.reload
-      $logger.info "Agent updated succesfully. Current version is #{Config[:version]}."
+      $logger.info "Agent updated succesfully. Current version is #{CloudStats::VERSION}."
 
       if Config[:restart_required]
         $logger.info "Restarting agent.."
@@ -52,7 +52,7 @@ module CloudStats
     end
 
     def current_version
-      Config[:version]
+      CloudStats::VERSION
     end
 
     def download(package_name)

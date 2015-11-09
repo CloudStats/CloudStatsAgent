@@ -1,10 +1,10 @@
 module CloudStats
   def self.serialize(server_key, sysinfo)
     {
-      version: Config[:version],
+      version: CloudStats::VERSION,
       server_key: server_key,
       server: {
-        agent_version:   Config[:version],
+        agent_version:   CloudStats::VERSION,
         services:        sysinfo[:services],
         cpu_usage:       sysinfo[:cpu][:usage],
         disk_used:       sysinfo[:disk][:used],
