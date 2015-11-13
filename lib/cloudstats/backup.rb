@@ -44,14 +44,13 @@ module CloudStats
     end
 
     def notify_backup_start
-      uri = URI("#{server_link}/notify?key=#{PublicConfig['key']}")
-      http = Net::HTTP.new(uri.host, uri.port)
+      notification_link = "#{server_link}/notify?key=#{PublicConfig['key']}"
+      message = {
+        status: 'success',
+        message: '[Backup::Starting] Starting the backup with the CloudStats agent'
+      }
 
-      request = Net::HTTP::Post.new(uri)
-      request.add_field('Content-Type', 'application/json')
-      request.body = {status: 'success', message: '[Backup::Starting] Starting the backup with the CloudStats agent'}.to_json
-
-      http.request(request)
+      CloudStats::Publisher.new(notification_link).publish(message)
     end
 
     def port
