@@ -34,7 +34,7 @@ module CloudStats
     def download_config
       $logger.info "Downloading backup config..."
 
-      backup_config_link = "#{Config[:protocol]}://api.#{Config[:domain]}#{port}/agent_api/backups/#{CloudStats.server_key(nil)}?key=#{PublicConfig['key']}"
+      backup_config_link = "#{server_link}?key=#{PublicConfig['key']}"
 
       open("#{@config_dir}/config.rb", 'w') do |file|
         file << open(backup_config_link).read
@@ -44,7 +44,7 @@ module CloudStats
     end
 
     def notify_backup_start
-      uri = URI("#{Config[:protocol]}://api.#{Config[:domain]}#{port}/agent_api/backups/#{CloudStats.server_key_from_file}/notify?key=#{PublicConfig['key']}")
+      uri = URI("#{server_link}/notify?key=#{PublicConfig['key']}")
       http = Net::HTTP.new(uri.host, uri.port)
 
       request = Net::HTTP::Post.new(uri)
@@ -56,6 +56,10 @@ module CloudStats
 
     def port
       port = Config[:port].nil? ? '' : ":#{Config[:port]}"
+    end
+
+    def server_link
+      "#{Config[:protocol]}://api.#{Config[:domain]}#{port}/agent_api/backups/#{CloudStats.server_key_from_file}"
     end
   end
 end
