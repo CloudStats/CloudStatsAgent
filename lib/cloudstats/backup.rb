@@ -21,6 +21,9 @@ module CloudStats
       ::Backup::Logger.clear!
 
       $logger.info "Performing the backup"
+      $logger.debug "Notifying the backup start"
+      notify_backup_start
+
       ::Backup::Model.all.each do |m|
         ::Backup::Model.find_by_trigger(m.trigger).first.perform!
 
@@ -31,7 +34,6 @@ module CloudStats
     def download_config
       $logger.info "Downloading backup config..."
 
-      port = Config[:port].nil? ? '' : ":#{Config[:port]}"
       backup_config_link = "#{Config[:protocol]}://api.#{Config[:domain]}#{port}/agent_api/backups/#{CloudStats.server_key(nil)}?key=#{PublicConfig['key']}"
 
       open("#{@config_dir}/config.rb", 'w') do |file|
@@ -39,6 +41,21 @@ module CloudStats
       end
 
       $logger.info "Backup config file downoloaded"
+    end
+
+    def notify_backup_start
+      uri = URI("#{Config[:protocol]}://api.#{Config[:domain]}#{port}/agent_api/backups/#{CloudStats.server_key_from_file}/notify?key=#{PublicConfig['key']}")
+      http = Net::HTTP.new(uri.host, uri.port)
+
+      request = Net::HTTP::Post.new(uri)
+      request.add_field('Content-Type', 'application/json')
+      request.body = {status: 'success', message: '[Backup::Starting] Starting the backup with the CloudStats agent'}.to_json
+
+      http.request(request)
+    end
+
+    def port
+      port = Config[:port].nil? ? '' : ":#{Config[:port]}"
     end
   end
 end
