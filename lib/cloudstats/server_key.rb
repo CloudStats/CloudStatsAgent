@@ -6,7 +6,7 @@ module CloudStats
       stored_key = File.read(server_key_path).strip
     end
 
-    valid = !stored_key.nil? && stored_key.length == 32
+    valid = stored_key && stored_key.length == 32
 
     if valid
       stored_key
