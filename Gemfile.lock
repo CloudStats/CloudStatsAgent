@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/otzy007/backup.git
-  revision: da0173c17d3a2ac7e2233474fcce2b5af4894402
+  revision: 333d8bf98c7de4cf2c9fba94999825995abeab82
   branch: az
   specs:
     backup (4.1.12)
@@ -8,6 +8,7 @@ GIT
       addressable (= 2.3.5)
       atomic (= 1.1.14)
       aws-ses (= 0.5.0)
+      azure (= 0.6.4)
       buftok (= 0.2.0)
       builder (= 3.2.2)
       descendants_tracker (= 0.0.3)

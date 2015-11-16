@@ -1,12 +1,8 @@
 module CloudStats
   def self.server_key(info)
-    server_key_path = Config[:server_key_path]
+    stored_key = CloudStats.server_key_from_file
 
-    if File.exists? server_key_path
-      stored_key = File.read(server_key_path).strip
-    end
-
-    valid = !stored_key.nil? && stored_key.length == 32
+    valid = stored_key && stored_key.length == 32
 
     if valid
       stored_key
@@ -14,6 +10,14 @@ module CloudStats
       key = self.generate_server_key(info)
       File.write(server_key_path, key)
       key
+    end
+  end
+
+  def self.server_key_from_file
+    server_key_path = Config[:server_key_path]
+
+    if File.exists? server_key_path
+      File.read(server_key_path).strip
     end
   end
 

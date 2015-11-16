@@ -3,10 +3,10 @@ require 'bundler/setup'
 require 'aws-sdk'
 require 'yaml'
 require_relative 'lib/cloudstats/helpers/object'
-require_relative 'lib/cloudstats/config'
+require_relative 'lib/cloudstats/version'
 
 PACKAGE_NAME = "cloudstats-agent"
-VERSION = Config[:version]
+VERSION = CloudStats::VERSION
 TRAVELING_RUBY_VERSION = "20150715-2.2.2"
 OUT_DIR = "out"
 
@@ -93,7 +93,7 @@ namespace :package do
       sh "cd packaging/tmp && env BUNDLE_IGNORE_CONFIG=1 bundle install --path ../vendor --without development"
     end
     sh "rm -rf packaging/tmp"
-    sh "rm -f packaging/vendor/*/*/cache/*"
+    sh "rm -fr packaging/vendor/*/*/cache/*"
     sh "rm -rf packaging/vendor/ruby/*/extensions"
     sh "find packaging/vendor/ruby/*/gems -name '*.so' | xargs rm -f"
     sh "find packaging/vendor/ruby/*/gems -name '*.bundle' | xargs rm -f"

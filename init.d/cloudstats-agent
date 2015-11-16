@@ -51,11 +51,11 @@ start() {
   ENV=production $progpath > /dev/null 2>&1 &
 
   # save pid to file
-  echo $! > $pidfile
+  local pid=$!
+  echo $pid > $pidfile
 
-  sleep 1s
   # check again if it's running
-  pidof $prog >/dev/null 2>&1
+  ps -p $pid >/dev/null 2>&1
   eval_cmd $?
 }
 
