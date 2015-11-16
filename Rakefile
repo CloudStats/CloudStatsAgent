@@ -26,7 +26,7 @@ desc "Package your app"
 task :package => ['package:linux:x86', 'package:linux:x86_64', 'package:osx']
 
 desc 'Deploy agent'
-task :deploy => [:package, 'deploy:installer', 'deploy:version_file'] do
+task :deploy => [:package, 'deploy:installer'] do
   ['osx', 'linux-x86', 'linux-x86_64'].each do |target|
     package = "#{PACKAGE_NAME}-#{VERSION}-#{target}.tar.gz"
     latest_package = "#{PACKAGE_NAME}-latest-#{target}.tar.gz"
@@ -36,6 +36,8 @@ task :deploy => [:package, 'deploy:installer', 'deploy:version_file'] do
 
     puts "Uploading #{latest_package}..."
     p azure_upload "#{OUT_DIR}/#{package}", latest_package
+
+    Rake::Task['deploy:version_file'].invoke
   end
 end
 
