@@ -8,14 +8,14 @@ module CloudStats
       stored_key
     else
       key = self.generate_server_key(info)
-      File.write(server_key_path, key)
+      File.write(Config[:server_key_path], key)
       key
     end
   end
 
   def self.server_key_from_file
-    if File.exists? server_key_path
-      File.read(server_key_path).strip
+    if File.exists? Config[:server_key_path]
+      File.read(Config[:server_key_path]).strip
     end
   end
 
@@ -25,9 +25,5 @@ module CloudStats
     data   = info[:network].to_s
     md5 << (random + data)
     md5.hexdigest
-  end
-
-  def server_key_path
-    Config[:server_key_path]
   end
 end
