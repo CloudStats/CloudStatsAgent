@@ -14,8 +14,6 @@ module CloudStats
   end
 
   def self.server_key_from_file
-    server_key_path = Config[:server_key_path]
-
     if File.exists? server_key_path
       File.read(server_key_path).strip
     end
@@ -27,5 +25,9 @@ module CloudStats
     data   = info[:network].to_s
     md5 << (random + data)
     md5.hexdigest
+  end
+
+  def server_key_path
+    Config[:server_key_path]
   end
 end
