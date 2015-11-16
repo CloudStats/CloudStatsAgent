@@ -61,6 +61,7 @@ module CloudStats
       open("/tmp/#{package_name}", 'wb') do |file|
         file << open(@update_server + package_name).read
       end
+      $logger.info "Donwload completed"
     end
 
     def install(package_name)
