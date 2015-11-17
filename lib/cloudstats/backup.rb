@@ -20,14 +20,18 @@ module CloudStats
       ::Backup::Config.load(root_path: @config_dir)
       ::Backup::Logger.clear!
 
-      $logger.info "Performing the backup"
-      $logger.debug "Notifying the backup start"
-      notify_backup_start
+      if ::Backup::Model.all.empty?
+        $logger.info "No backups configured"
+      else
+        $logger.info "Performing the backup"
+        $logger.debug "Notifying the backup start"
+        notify_backup_start
 
-      ::Backup::Model.all.each do |m|
-        ::Backup::Model.find_by_trigger(m.trigger).first.perform!
+        ::Backup::Model.all.each do |m|
+          ::Backup::Model.find_by_trigger(m.trigger).first.perform!
 
-        m.notifiers.each(&:perform!)
+          m.notifiers.each(&:perform!)
+        end
       end
     end
 
