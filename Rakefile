@@ -12,6 +12,7 @@ OUT_DIR = "out"
 
 s3 = Aws::S3::Resource.new(region: 'eu-west-1')
 
+# Native packages from http://traveling-ruby.s3-us-west-2.amazonaws.com/list.html
 NATIVES = {
   'nokogiri': '1.6.6.2'
 }
