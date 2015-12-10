@@ -26,12 +26,13 @@ module CloudStats
 
       download(current_package_name)
       install(current_package_name)
-      Reloader.reload
-      $logger.info "Agent updated succesfully. Current version is #{CloudStats::VERSION}."
 
       if Config[:restart_required]
         $logger.info "Restarting agent.."
         exec "/etc/init.d/cloudstats-agent", "restart"
+      else
+        Reloader.reload
+        $logger.info "Agent updated succesfully. Current version is #{CloudStats::VERSION}."
       end
       true
     end
@@ -61,6 +62,7 @@ module CloudStats
       open("/tmp/#{package_name}", 'wb') do |file|
         file << open(@update_server + package_name).read
       end
+      $logger.info "Donwload completed"
     end
 
     def install(package_name)

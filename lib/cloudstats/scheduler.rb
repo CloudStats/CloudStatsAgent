@@ -27,7 +27,7 @@ module CloudStats
       end
 
       $logger.info 'Starting the CloudStats agent'
-
+      $logger.debug 'Scheduling the jobs'
       scheduler.every '1m' do
         CloudStats.perform_update
       end
