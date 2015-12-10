@@ -150,6 +150,7 @@ def create_package(target)
   sh "mkdir #{package_dir}/lib/ruby"
   sh "tar -xzf packaging/traveling-ruby-#{TRAVELING_RUBY_VERSION}-#{target}.tar.gz -C #{package_dir}/lib/ruby"
   sh "cp packaging/wrapper.sh #{package_dir}/#{PACKAGE_NAME}"
+  sh "cp packaging/keepalive #{package_dir}/keepalive"
   sh "cp packaging/reset-key.sh #{package_dir}/reset-key"
   sh "chmod +x #{package_dir}/#{PACKAGE_NAME}"
   sh "cp -pR packaging/vendor #{package_dir}/lib/"

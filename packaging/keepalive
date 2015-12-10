@@ -1,0 +1,14 @@
+#!/bin/sh
+
+PROC=$@
+LOG=/var/log/cloudstats.watcher.log
+
+echo `date` >> $LOG
+echo Watching: $PROC >> $LOG
+$PROC
+
+while (("$?" != "0")); do
+  echo `date` >> $LOG
+  echo Running again: $PROC >> $LOG
+  $PROC
+done
