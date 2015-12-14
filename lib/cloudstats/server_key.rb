@@ -1,29 +1,26 @@
 module CloudStats
   def self.server_key(info)
-    stored_key = CloudStats.server_key_from_file
+    stored_key = CloudStats.server_key_from_file(Config[:server_key_path])
+    old_stored_key = CloudStats.server_key_from_file(Config[:old_server_key_path])
 
     valid = stored_key && stored_key.length == 32
 
     if valid
       stored_key
     else
-      key = self.generate_server_key(info)
+      key = old_stored_key || self.generate_server_key(info)
       File.write(Config[:server_key_path], key)
       key
     end
   end
 
-  def self.server_key_from_file
-    if File.exists? Config[:server_key_path]
-      File.read(Config[:server_key_path]).strip
+  def self.server_key_from_file(file)
+    if File.exists? file
+      File.read(file).strip
     end
   end
 
   def self.generate_server_key(info)
-    md5    = Digest::MD5.new
-    random = Random.new.bytes(10)
-    data   = info[:network].to_s
-    md5 << (random + data)
-    md5.hexdigest
+    SecureRandom.urlsafe_base64(254)
   end
 end
