@@ -29,7 +29,7 @@ module CloudStats
 
       if Config[:restart_required]
         $logger.info "Restarting agent.."
-        `( /etc/init.d/cloudstats-agent restart & )`
+        exit(1) # keepalive will start agent back
       else
         Reloader.reload
         $logger.info "Agent updated succesfully. Current version is #{CloudStats::VERSION}."
