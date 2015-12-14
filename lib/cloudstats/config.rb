@@ -20,7 +20,7 @@ Config = {
 
   # agent
   install_path: ENV['INSTALL_PATH'] || '/home/cloudstats_agent',
-  update_type:  :restart # :restart, :keepalive, :reload
+  update_type:  :keepalive # :restart, :keepalive, :reload
 }
 
 Config[:public_config_path] = "#{Config[:install_path]}/config.yml"
