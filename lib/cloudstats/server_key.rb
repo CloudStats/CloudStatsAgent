@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module CloudStats
   def self.server_key(info)
     stored_key = CloudStats.server_key_from_file(Config[:server_key_path])
@@ -9,6 +11,8 @@ module CloudStats
       stored_key
     else
       key = old_stored_key || self.generate_server_key(info)
+      dirname = File.dirname(Config[:server_key_path])
+      FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
       File.write(Config[:server_key_path], key)
       key
     end
