@@ -19,8 +19,8 @@ Config = {
   server_key_path: "#{$SRC_PATH}/../server.key",
 
   # agent
-  install_path:     ENV['INSTALL_PATH'] || '/home/cloudstats_agent',
-  restart_required: true
+  install_path: ENV['INSTALL_PATH'] || '/home/cloudstats_agent',
+  update_type:  :restart # :restart, :keepalive, :reload
 }
 
 Config[:public_config_path] = "#{Config[:install_path]}/config.yml"

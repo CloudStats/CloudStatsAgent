@@ -27,10 +27,15 @@ module CloudStats
       download(current_package_name)
       install(current_package_name)
 
-      if Config[:restart_required]
-        $logger.info "Restarting agent.."
+      case Config[:update_type]
+      when :restart 
+        $logger.info "Restarting via :restart"
+        `/etc/init.d/cloudstats-agent restart`
+      when :keepalive
+        $logger.info "Restarting via :keepalive"
         exit(1) # keepalive will start agent back
       else
+        $logger.info "Restarting via :reload"
         Reloader.reload
         $logger.info "Agent updated succesfully. Current version is #{CloudStats::VERSION}."
       end

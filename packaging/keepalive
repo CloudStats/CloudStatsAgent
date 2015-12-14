@@ -7,7 +7,8 @@ echo `date` >> $LOG
 echo Watching: $PROC >> $LOG
 $PROC
 
-while (("$?" != "0")); do
+while :
+do
   echo `date` >> $LOG
   echo Running again: $PROC >> $LOG
   $PROC
