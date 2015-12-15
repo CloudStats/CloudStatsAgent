@@ -7,6 +7,7 @@ require 'net/http'
 require 'digest'
 require 'ps-ruby'
 
+require_relative './cloudstats/debug'
 require_relative './cloudstats/reloader'
 CloudStats::Reloader.watch do
   require_relative 'initializers/logger'
