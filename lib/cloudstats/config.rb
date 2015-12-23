@@ -5,6 +5,7 @@ $PROGRAM_NAME = 'cloudstats-agent'
 $SRC_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 Config = {
+  cloudstats_agent_env: 'development',
 
   # url params
   protocol: ENV['PROT'] || 'https',

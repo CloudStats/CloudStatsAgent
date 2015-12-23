@@ -11,13 +11,16 @@ module Airbrake
   def self.catch(error, params={})
     Airbrake.notify_or_ignore(
       error,
-      parameters: params.merge!({
-        argv: ARGV,
-        public_config: PublicConfig,
-        config: Config,
-        src_path: $SRC_PATH,
-        env: ENV
-      })
+      {
+        parameters: params.merge!({
+          argv: ARGV,
+          public_config: PublicConfig,
+          config: Config,
+          src_path: $SRC_PATH,
+          env: ENV
+        }),
+        environment_name: Config[:cloudstats_agent_env]
+      }
     )
   end
 end
