@@ -1,10 +1,13 @@
 require 'airbrake'
 
+require_relative '../version.rb'
+
 Airbrake.configure do |config|
   config.api_key = '81e6c1f54c95aa51f1898e49182482ba'
   config.host    = '40.127.109.43'
   config.port    = 3000
   config.secure  = config.port == 443
+  config.framework = "CloudStatsAgent v.#{CloudStats::VERSION}"
 end
 
 module Airbrake
