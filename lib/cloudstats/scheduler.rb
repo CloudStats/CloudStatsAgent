@@ -32,7 +32,7 @@ module CloudStats
         CloudStats.perform_update
       end
 
-      scheduler.every '1m' do
+      scheduler.every '5h' do
         Updater.new.update
       end
 
