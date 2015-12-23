@@ -19,8 +19,7 @@ module Airbrake
           argv: ARGV,
           public_config: PublicConfig,
           config: Config,
-          src_path: $SRC_PATH,
-          env: ENV
+          src_path: $SRC_PATH
         }),
         environment_name: Config[:cloudstats_agent_env]
       }
