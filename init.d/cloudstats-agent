@@ -18,10 +18,12 @@
 ### END INIT INFO
 
 # absolute path to the executable library
+homepath='/home/cloudstats_agent'
 progpath='/home/cloudstats_agent/cloudstats-agent'
 
 # binary name
 prog=cloudstats-agent
+keepalive_prog="/bin/sh $homepath/keepalive"
 
 # pid file
 pidfile="/var/run/${prog}.pid"
@@ -61,7 +63,7 @@ start() {
 
 stop() {
   # check if it's running
- local pids=$(pidof $prog)
+  local pids="$(pidof $keepalive_prog) $(pidof $prog)"
 
   if [ -z "$pids" ]; then
     echo "$prog not running"
