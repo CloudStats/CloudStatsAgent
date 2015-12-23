@@ -18,7 +18,7 @@ module CloudStats
     end
   end
 
-  def self.server_key_from_file(file)
+  def self.server_key_from_file(file = Config[:server_key_path])
     if File.exists? file
       File.read(file).strip
     end
