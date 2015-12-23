@@ -9,4 +9,8 @@ export BUNDLE_GEMFILE="$SELFDIR/lib/vendor/Gemfile"
 unset BUNDLE_IGNORE_CONFIG
 
 # Run the actual app using the bundled Ruby interpreter.
-exec "$SELFDIR/keepalive" "$SELFDIR/lib/ruby/bin/ruby" -rbundler/setup "$SELFDIR/lib/app/lib/cloudstats.rb" $@
+if [[ $# -ne 0 ]]; then
+  exec "$SELFDIR/lib/ruby/bin/ruby" -rbundler/setup "$SELFDIR/lib/app/lib/cloudstats.rb" $@
+else
+  exec "$SELFDIR/keepalive" "$SELFDIR/lib/ruby/bin/ruby" -rbundler/setup "$SELFDIR/lib/app/lib/cloudstats.rb"
+fi
