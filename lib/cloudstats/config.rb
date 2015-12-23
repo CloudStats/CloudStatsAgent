@@ -16,7 +16,7 @@ Config = {
   timeout: 2,
 
   # serializer
-  server_key_path: "/etc/cloudstats/server.key",
+  server_key_path: ENV['SERVER_KEY_PATH'] || "/etc/cloudstats/server.key",
   old_server_key_path: "#{$SRC_PATH}/../server.key",
 
   # agent
