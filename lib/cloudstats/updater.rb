@@ -7,6 +7,7 @@ module CloudStats
       repo = ENV['REPO'] || PublicConfig['repo'] || 'agent'
       @update_server = "https://cloudstatsstorage.blob.core.windows.net/#{repo}/"
       @app_dir = Config[:install_path]
+      @init_script = PublicConfig['init_script'] || '/etc/init.d/cloudstats-agent'
     end
 
     def update
@@ -27,6 +28,7 @@ module CloudStats
 
       download(current_package_name)
       install(current_package_name)
+      update_init_script
       remove_archive(current_package_name)
 
       Reloader.reload
@@ -82,6 +84,10 @@ module CloudStats
       file = "/tmp/#{package_name}"
       $logger.debug "#{file} removed"
       File.delete(file)
+    end
+
+    def update_init_script
+      `cp #{@app_dir}/init.d/cloudstats-agent #{@init_script}`
     end
   end
 end
