@@ -39,6 +39,14 @@ describe CloudStats::Updater do
     expect(`ls /tmp/cloudstats-agent-0.0.1.1-linux-x86_64`).to_not eq('')
   end
 
+  it 'should remove the archive' do
+    `cp spec/fixtures/cloudstats-agent-0.0.1.1-linux-x86_64.tar.gz /tmp`
+    c = CloudStats::Updater.new
+    c.send(:remove_archive, 'cloudstats-agent-0.0.1.1-linux-x86_64.tar.gz')
+
+    expect(`ls /tmp/cloudstats-agent-0.0.1.1-linux-x86_64.tar.gz`).to eq('')
+  end
+
   it 'should update the app' do
     stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/version").
         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
