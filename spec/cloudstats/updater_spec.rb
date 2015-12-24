@@ -58,7 +58,7 @@ describe CloudStats::Updater do
     c = CloudStats::Updater.new
     c.instance_variable_set :@app_dir, app_dir
 
-    Config[:restart_required] = false
+    Config[:update_type] = :reload
     expect(c.update).to be true
 
     expect(`ls #{app_dir}`).to_not eq('')
