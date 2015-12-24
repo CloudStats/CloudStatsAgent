@@ -3,7 +3,7 @@ module CloudStats
     attr_reader :path
 
     def initialize(path)
-      @pass1 = Proc.new { self.default_run }
+      @pass1 = proc { default_run }
       @pass2 = nil
       @path = path
     end
@@ -18,9 +18,7 @@ module CloudStats
     end
 
     def os(name)
-      if OS::match?(name)
-        yield
-      end
+      yield if OS.match?(name)
     end
 
     def include(helper)
@@ -51,7 +49,7 @@ module CloudStats
       h
     rescue => error
       $logger.warn "Failed to fetch :#{key} (#{error.message})"
-      Airbrake.catch(error, { key: key })
+      Airbrake.catch(error, key: key)
       {}
     end
   end
