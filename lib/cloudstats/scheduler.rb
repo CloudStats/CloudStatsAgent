@@ -3,19 +3,19 @@ require 'rufus/scheduler'
 module CloudStats
   class << self
     def perform_update
-      $logger.info "Collecting information"
-      info = Sysinfo.load { }
-      $logger.info "[DONE]"
+      $logger.info 'Collecting information'
+      info = Sysinfo.load {}
+      $logger.info '[DONE]'
 
-      $logger.info "Publishing..."
+      $logger.info 'Publishing...'
       response = CloudStats.publish(info)
       if response['ok']
         $logger.info "Response: #{response}"
       else
-        $logger.error "There was an error posting the status"
+        $logger.error 'There was an error posting the status'
         $logger.error "Response: #{response}"
       end
-      $logger.info "[DONE]"
+      $logger.info '[DONE]'
     end
 
     def start
@@ -23,7 +23,7 @@ module CloudStats
 
       def scheduler.on_error(job, error)
         $logger.error "#{error.class.name}: #{error.message}"
-        Airbrake.catch(error, { job_id: job.id })
+        Airbrake.catch(error, job_id: job.id)
       end
 
       $logger.info 'Starting the CloudStats agent'

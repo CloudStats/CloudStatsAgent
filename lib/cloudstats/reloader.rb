@@ -4,17 +4,17 @@ module CloudStats
       instance_eval(&block)
     end
 
-    def self.require_relative file
+    def self.require_relative(file)
       add_dependency File.join(path, "#{file}.rb")
     end
 
-    def self.require_dir dir
+    def self.require_dir(dir)
       Dir["#{path}/#{dir}/*.rb"].each do |file|
         add_dependency file
       end
     end
 
-    def self.require_tree dir
+    def self.require_tree(dir)
       Dir["#{path}/#{dir}/**/*.rb"].each do |file|
         add_dependency file
       end
