@@ -27,6 +27,7 @@ module CloudStats
 
       download(current_package_name)
       install(current_package_name)
+      remove_archive(current_package_name)
 
       Reloader.reload
       $logger.info "Reloader updated config to version #{CloudStats::VERSION}."
@@ -75,6 +76,12 @@ module CloudStats
     def install(package_name)
       $logger.info "Installing the package #{package_name} to #{@app_dir}"
       `cd /tmp && tar zxf #{package_name} -C #{@app_dir} --strip-components 1`
+    end
+
+    def remove_archive(package_name)
+      file = "/tmp/#{package_name}"
+      $logger.debug "#{file} removed"
+      File.delete(file)
     end
   end
 end
