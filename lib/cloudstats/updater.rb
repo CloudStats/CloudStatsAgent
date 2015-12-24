@@ -29,6 +29,9 @@ module CloudStats
       install(current_package_name)
       remove_archive(current_package_name)
 
+      Reloader.reload
+      $logger.info "Reloader updated config to version #{CloudStats::VERSION}."
+
       case Config[:update_type]
       when :restart
         $logger.info "Restarting via :restart"
@@ -37,8 +40,6 @@ module CloudStats
         $logger.info "Restarting via :keepalive"
         exit(1) # keepalive will start agent back
       else
-        Reloader.reload
-        $logger.info "Reloader updated config to version #{CloudStats::VERSION}."
         $logger.info "Restarted via :reload"
       end
       true
