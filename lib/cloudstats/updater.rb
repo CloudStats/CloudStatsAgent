@@ -1,4 +1,5 @@
 require 'open-uri'
+require_relative 'version.rb'
 
 module CloudStats
   class Updater
@@ -31,7 +32,7 @@ module CloudStats
       $logger.info "Reloader updated config to version #{CloudStats::VERSION}."
 
       case Config[:update_type]
-      when :restart 
+      when :restart
         $logger.info "Restarting via :restart"
         `/etc/init.d/cloudstats-agent restart`
       when :keepalive
