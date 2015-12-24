@@ -36,13 +36,13 @@ module CloudStats
 
       case Config[:update_type]
       when :restart
-        $logger.info "Restarting via :restart"
+        $logger.info 'Restarting via :restart'
         `/etc/init.d/cloudstats-agent restart`
       when :keepalive
-        $logger.info "Restarting via :keepalive"
+        $logger.info 'Restarting via :keepalive'
         exit(1) # keepalive will start agent back
       else
-        $logger.info "Restarted via :reload"
+        $logger.info 'Restarted via :reload'
       end
       true
     end
@@ -51,7 +51,7 @@ module CloudStats
 
     def package_name(version)
       os = if OS.current_os == :osx
-             "osx"
+             'osx'
            else
              "linux-#{OS.architecture}"
            end
@@ -67,12 +67,12 @@ module CloudStats
     end
 
     def download(package_name)
-      $logger.info "Downloading latest version..."
+      $logger.info 'Downloading latest version...'
 
       open("/tmp/#{package_name}", 'wb') do |file|
         file << open(@update_server + package_name).read
       end
-      $logger.info "Donwload completed"
+      $logger.info 'Donwload completed'
     end
 
     def install(package_name)
