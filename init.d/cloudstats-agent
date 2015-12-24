@@ -23,7 +23,7 @@ progpath='/home/cloudstats_agent/cloudstats-agent'
 
 # binary name
 prog=cloudstats-agent
-keepalive_prog="/bin/sh $homepath/keepalive"
+keepalive_prog="$homepath/keepalive"
 
 # pid file
 pidfile="/var/run/${prog}.pid"
@@ -63,7 +63,7 @@ start() {
 
 stop() {
   # check if it's running
-  local pids="$(pidof $keepalive_prog) $(pidof $prog)"
+  local pids="$(pidof -x $keepalive_prog) $(pidof $prog)"
 
   if [ -z "$pids" ]; then
     echo "$prog not running"
