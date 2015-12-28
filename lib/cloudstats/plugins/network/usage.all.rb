@@ -45,9 +45,13 @@ CloudStats::Sysinfo.plugin :network do
   end
 
   def format(iface, present, past)
-    rx = (present[0] - past[0]) / Config[:timeout]
-    tx = (present[1] - past[1]) / Config[:timeout]
-    [iface, [rx, 0].max, [tx, 0].max]
+    if present && past
+      rx = (present[0] - past[0]) / Config[:timeout]
+      tx = (present[1] - past[1]) / Config[:timeout]
+      [iface, [rx, 0].max, [tx, 0].max]
+    else
+      [iface, 0, 0]
+    end
   end
 
   before_sleep do

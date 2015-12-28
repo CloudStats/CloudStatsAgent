@@ -36,5 +36,11 @@ module CloudStats
       plugin.instance_eval(&block)
       @@plugins += [plugin]
     end
+
+    def safe_get(*path)
+      path.inject(self) do |acc, x|
+        acc.nil? ? acc : acc[x]
+      end
+    end
   end
 end
