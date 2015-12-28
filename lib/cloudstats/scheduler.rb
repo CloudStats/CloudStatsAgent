@@ -8,14 +8,19 @@ module CloudStats
       $logger.info '[DONE]'
 
       $logger.info 'Publishing...'
-      response = CloudStats.publish(info)
-      if response['ok']
-        $logger.info "Response: #{response}"
-      else
-        $logger.error 'There was an error posting the status'
-        $logger.error "Response: #{response}"
+      begin
+        response = CloudStats.publish(info)
+
+        if response['ok']
+          $logger.info "Response: #{response}"
+        else
+          $logger.error 'There was an error posting the status'
+          $logger.error "Response: #{response}"
+        end
+        $logger.info '[DONE]'
+      rescue SocketError => e
+        log_socket_error('api.cloudstats.me', e)
       end
-      $logger.info '[DONE]'
     end
 
     def start
@@ -58,6 +63,15 @@ module CloudStats
       key       = PublicConfig['key']
 
       @@_url ||= "#{protocol}://api.#{domain}#{port}/#{path}?key=#{key}"
+    end
+
+    def log_socket_error(url, e)
+      $logger.error "Could not reach #{url}.\n
+      It could be due to a faulty network or DNS.\n
+      Please check if you can ping and load the api.cloudstats.me page from
+      this server, otherwise please contact the CloudStats support.\n
+      Please include in you report the following error:
+      #{e}"
     end
   end
 end
