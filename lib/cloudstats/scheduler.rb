@@ -8,7 +8,7 @@ module CloudStats
       $logger.info '[DONE]'
 
       $logger.info 'Publishing...'
-      catch_and_log_socket_error('api.cloudstats.me') do
+      catch_and_log_socket_error('https://api.cloudstats.me') do
         response = CloudStats.publish(info)
 
         if response['ok']
