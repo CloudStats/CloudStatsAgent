@@ -1,11 +1,10 @@
 CloudStats::Sysinfo.plugin :network do
-
   os :linux do
     def fetch
-      lines = `ip -s link`.each_line.map(&:downcase)  
+      lines = `ip -s link`.each_line.map(&:downcase)
       ifaces = lines.map(&:split)
-      rxlines = ifaces.each_with_index.select { |x, i| x[0] =~ /^rx/ }.map { |x, i| i + 1 }
-      txlines = ifaces.each_with_index.select { |x, i| x[0] =~ /^tx/ }.map { |x, i| i + 1 }
+      rxlines = ifaces.each_with_index.select { |x, _i| x[0] =~ /^rx/ }.map { |_x, i| i + 1 }
+      txlines = ifaces.each_with_index.select { |x, _i| x[0] =~ /^tx/ }.map { |_x, i| i + 1 }
 
       skip_ifaces = %w(loopback)
 
@@ -13,7 +12,7 @@ CloudStats::Sysinfo.plugin :network do
         .map { |x| /^\d+[:]\s*([^\s]+)[:]\s*[<](.*)[>]/.match(x) }
         .reject(&:nil?)
         .zip(rxlines, txlines)
-        .reject do |match, rx, tx| 
+        .reject do |match, _rx, _tx|
           skip_ifaces.any? do |skip|
             match[2].split(',').include?(skip)
           end

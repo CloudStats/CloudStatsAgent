@@ -5,7 +5,7 @@ def reload!
 end
 
 def quit
-  puts "quiting"
+  puts 'quiting'
   exit
 end
 

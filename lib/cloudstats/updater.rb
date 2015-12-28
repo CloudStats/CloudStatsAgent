@@ -1,11 +1,13 @@
 require 'open-uri'
+require_relative 'version.rb'
 
 module CloudStats
   class Updater
-    def initialize(options={})
+    def initialize
       repo = ENV['REPO'] || PublicConfig['repo'] || 'agent'
       @update_server = "https://cloudstatsstorage.blob.core.windows.net/#{repo}/"
       @app_dir = Config[:install_path]
+      @init_script = PublicConfig['init_script'] || '/etc/init.d/cloudstats-agent'
     end
 
     def update
@@ -26,19 +28,21 @@ module CloudStats
 
       download(current_package_name)
       install(current_package_name)
+      update_init_script
+      remove_archive(current_package_name)
 
       Reloader.reload
       $logger.info "Reloader updated config to version #{CloudStats::VERSION}."
 
       case Config[:update_type]
-      when :restart 
-        $logger.info "Restarting via :restart"
+      when :restart
+        $logger.info 'Restarting via :restart'
         `/etc/init.d/cloudstats-agent restart`
       when :keepalive
-        $logger.info "Restarting via :keepalive"
+        $logger.info 'Restarting via :keepalive'
         exit(1) # keepalive will start agent back
       else
-        $logger.info "Restarted via :reload"
+        $logger.info 'Restarted via :reload'
       end
       true
     end
@@ -47,7 +51,7 @@ module CloudStats
 
     def package_name(version)
       os = if OS.current_os == :osx
-             "osx"
+             'osx'
            else
              "linux-#{OS.architecture}"
            end
@@ -63,17 +67,27 @@ module CloudStats
     end
 
     def download(package_name)
-      $logger.info "Downloading latest version..."
+      $logger.info 'Downloading latest version...'
 
       open("/tmp/#{package_name}", 'wb') do |file|
         file << open(@update_server + package_name).read
       end
-      $logger.info "Donwload completed"
+      $logger.info 'Donwload completed'
     end
 
     def install(package_name)
       $logger.info "Installing the package #{package_name} to #{@app_dir}"
       `cd /tmp && tar zxf #{package_name} -C #{@app_dir} --strip-components 1`
+    end
+
+    def remove_archive(package_name)
+      file = "/tmp/#{package_name}"
+      $logger.debug "#{file} removed"
+      File.delete(file)
+    end
+
+    def update_init_script
+      `cp #{@app_dir}/init.d/cloudstats-agent #{@init_script}`
     end
   end
 end

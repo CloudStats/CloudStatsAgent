@@ -11,7 +11,7 @@ CloudStats::Sysinfo.plugin :cpu do
 
   os :linux do
     run do
-      load_avg_file = "/proc/loadavg"
+      load_avg_file = '/proc/loadavg'
       (l1, l5, l15) = File.readlines(load_avg_file).first.split[0..2].map(&:to_f)
       format(l1, l5, l15)
     end

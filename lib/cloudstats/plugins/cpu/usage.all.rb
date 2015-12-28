@@ -1,8 +1,7 @@
 CloudStats::Sysinfo.plugin :cpu do
-
   os :linux do
     def fetch_stat
-      File.readlines('/proc/stat').grep(/^cpu/).first.split(" ").map(&:to_f)
+      File.readlines('/proc/stat').grep(/^cpu/).first.split(' ').map(&:to_f)
     end
 
     before_sleep do
@@ -21,9 +20,8 @@ CloudStats::Sysinfo.plugin :cpu do
   os :osx do
     run do
       top = `top -l1 | awk '/CPU usage/'`
-      top = top.gsub(/[\,a-zA-Z:]/, "").split(" ")
+      top = top.gsub(/[\,a-zA-Z:]/, '').split(' ')
       { usage: top[0].to_f }
     end
   end
-
 end

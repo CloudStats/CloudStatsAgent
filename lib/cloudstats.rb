@@ -23,9 +23,9 @@ begin
     require_tree './plugins'
   end
 
-  $logger.info ""
+  $logger.info ''
   $logger.info "CloudStats Agent v#{CloudStats::VERSION}"
-  $logger.info ""
+  $logger.info ''
 
   if $enable_repl
     require_relative 'cloudstats/repl/repl'

@@ -14,12 +14,16 @@ module CloudStats
       end
 
       def close
-        @ios.each { |io| io.close }
+        @ios.each(&:close)
       end
     end
 
     def initialize
-      logfile = open('/var/log/cloudstats.log', 'a') rescue nil
+      logfile = begin
+                  open('/var/log/cloudstats.log', 'a')
+                rescue
+                  nil
+                end
       logfile = open('./cloudstats.log', 'a') unless logfile
       logfile.sync = true
 

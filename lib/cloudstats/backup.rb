@@ -9,22 +9,22 @@ module CloudStats
     def initialize
       @config_dir = "#{File.expand_path(File.dirname(__FILE__))}/../../Backup"
 
-      Dir.mkdir @config_dir unless File.exists?(@config_dir)
+      Dir.mkdir @config_dir unless File.exist?(@config_dir)
     end
 
     def perform
       download_config unless ENV['DONT_DOWNLOAD_BACKUP_CONFIG']
 
-      $logger.info "Initializing the backup"
+      $logger.info 'Initializing the backup'
       ::Backup::Model.all.clear
       ::Backup::Config.load(root_path: @config_dir)
       ::Backup::Logger.clear!
 
       if ::Backup::Model.all.empty?
-        $logger.info "No backups configured"
+        $logger.info 'No backups configured'
       else
-        $logger.info "Performing the backup"
-        $logger.debug "Notifying the backup start"
+        $logger.info 'Performing the backup'
+        $logger.debug 'Notifying the backup start'
         notify_backup_start
 
         ::Backup::Model.all.each do |m|
@@ -36,7 +36,7 @@ module CloudStats
     end
 
     def download_config
-      $logger.info "Downloading backup config..."
+      $logger.info 'Downloading backup config...'
 
       backup_config_link = "#{server_link}?key=#{PublicConfig['key']}"
 
@@ -44,7 +44,7 @@ module CloudStats
         file << open(backup_config_link).read
       end
 
-      $logger.info "Backup config file downoloaded"
+      $logger.info 'Backup config file downoloaded'
     end
 
     def notify_backup_start
