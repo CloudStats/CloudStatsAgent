@@ -36,7 +36,7 @@ module CloudStats
       end
 
       scheduler.every '5h' do
-        Updater.new.update
+        catch_and_log_socket_error(Updater.STORAGE_SERVICE) { Updater.new.update }
       end
 
       scheduler.cron '0 0 * * *' do
