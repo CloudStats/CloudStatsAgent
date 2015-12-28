@@ -9,6 +9,7 @@ PACKAGE_NAME = "cloudstats-agent"
 VERSION = CloudStats::VERSION
 TRAVELING_RUBY_VERSION = "20150715-2.2.2"
 OUT_DIR = "out"
+DEST_ENVIRONMENT = ENV['DEST_ENVIRONMENT'] || 'staging'
 
 s3 = Aws::S3::Resource.new(region: 'eu-west-1')
 
@@ -147,6 +148,7 @@ def create_package(target)
   sh "cp init.d/cloudstats-agent #{package_dir}/init.d/"
   sh "mkdir -p #{package_dir}/lib/app"
   sh "cp -r lib #{package_dir}/lib/app/"
+  sh "echo 'module CloudStats; ENVIRONMENT = \"#{DEST_ENVIRONMENT}\"; end' > #{package_dir}/lib/app/lib/cloudstats/environment.rb"
   # sh "cp config.yml #{package_dir}/lib/app/"
   sh "mkdir #{package_dir}/lib/ruby"
   sh "tar -xzf packaging/traveling-ruby-#{TRAVELING_RUBY_VERSION}-#{target}.tar.gz -C #{package_dir}/lib/ruby"
