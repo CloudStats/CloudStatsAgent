@@ -1,6 +1,7 @@
 require 'airbrake'
 
 require_relative '../version.rb'
+require_relative '../environment.rb'
 
 Airbrake.configure do |config|
   config.api_key = '81e6c1f54c95aa51f1898e49182482ba'
@@ -18,7 +19,7 @@ module Airbrake
                                 public_config: PublicConfig,
                                 config: Config,
                                 src_path: $SRC_PATH),
-      environment_name: Config[:cloudstats_agent_env]
+      environment_name: CloudStats::ENVIRONMENT
     )
   end
 end
