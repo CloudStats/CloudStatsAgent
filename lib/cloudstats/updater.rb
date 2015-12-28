@@ -3,9 +3,13 @@ require_relative 'version.rb'
 
 module CloudStats
   class Updater
+    def self.STORAGE_SERVICE
+      'https://cloudstatsstorage.blob.core.windows.net'
+    end
+
     def initialize
       repo = ENV['REPO'] || PublicConfig['repo'] || 'agent'
-      @update_server = "https://cloudstatsstorage.blob.core.windows.net/#{repo}/"
+      @update_server = "#{Updater.STORAGE_SERVICE}/#{repo}/"
       @app_dir = Config[:install_path]
       @init_script = PublicConfig['init_script'] || '/etc/init.d/cloudstats-agent'
     end
