@@ -7,11 +7,12 @@ module CloudStats
       'https://cloudstatsstorage.blob.core.windows.net'
     end
 
-    def initialize
+    def initialize(update_type: Config[:update_type])
       repo = ENV['REPO'] || PublicConfig['repo'] || 'agent'
       @update_server = "#{Updater.STORAGE_SERVICE}/#{repo}/"
       @app_dir = Config[:install_path]
       @init_script = PublicConfig['init_script'] || '/etc/init.d/cloudstats-agent'
+      @update_type = update_type
     end
 
     def update
@@ -38,7 +39,7 @@ module CloudStats
       Reloader.reload
       $logger.info "Reloader updated config to version #{CloudStats::VERSION}."
 
-      case Config[:update_type]
+      case @update_type
       when :restart
         $logger.info 'Restarting via :restart'
         `/etc/init.d/cloudstats-agent restart`
