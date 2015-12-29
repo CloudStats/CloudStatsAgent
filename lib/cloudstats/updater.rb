@@ -44,7 +44,7 @@ module CloudStats
         `/etc/init.d/cloudstats-agent restart`
       when :keepalive
         $logger.info 'Restarting via :keepalive'
-        exit(1) # keepalive will start agent back
+        exit # keepalive will start agent back
       else
         $logger.info 'Restarted via :reload'
       end
