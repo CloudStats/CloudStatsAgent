@@ -15,15 +15,15 @@ if [ -d "$install_dir" ]; then
   rm -rf $install_dir
 fi
 
-echo "Attempting to install necessary package: iproute2 net-tools"
+echo "Attempting to install necessary package: tar gzip sysstat iproute2 net-tools"
 if [ -e /etc/debian_version ]
 then
-  apt-get install iproute2 net-tools -y > /dev/null
+  apt-get install tar gzip sysstat iproute2 net-tools -y > /dev/null
 fi
 
 if [ -e /etc/redhat-release ]
 then
-  yum install net-tools iproute2 -y > /dev/null
+  yum install tar gzip sysstat net-tools iproute2 -y > /dev/null
 fi
 
 
