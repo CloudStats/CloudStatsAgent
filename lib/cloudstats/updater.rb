@@ -42,7 +42,7 @@ module CloudStats
       case @update_type
       when :restart
         $logger.info 'Restarting via :restart'
-        `/etc/init.d/cloudstats-agent restart`
+        exec "/etc/init.d/cloudstats-agent", "restart"
       when :keepalive
         $logger.info 'Restarting via :keepalive'
         exit # keepalive will start agent back
