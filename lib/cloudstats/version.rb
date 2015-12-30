@@ -1,3 +1,3 @@
 module CloudStats
-  VERSION = '1.5.0.21'
+  VERSION = '1.5.0.32'
 end
