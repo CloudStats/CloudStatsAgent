@@ -44,7 +44,7 @@ begin
     end
 
   when '--update'
-    CloudStats::Updater.new.update
+    CloudStats::Updater.new(update_type: :restart).update
 
   when '--backup'
     CloudStats::Backup.instance.perform
