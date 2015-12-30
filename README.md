@@ -27,16 +27,16 @@ bundle install
 
 5. You setup the agent with your API Key
 ```bash
-bundle exec ruby lib/cloudstats.rb --setup YOUR_API_KEY
+INSTALL_PATH=`pwd` bundle exec ruby lib/cloudstats.rb --setup YOUR_API_KEY
 ```
 
 6. You can run the agent with
 ```bash
-bundle exec ruby lib/cloudstats.rb
+INSTALL_PATH=`pwd` bundle exec ruby lib/cloudstats.rb
 ```
 
 7. You can modify the existing script in init.d/cloudstats-agent to start the
 agent or you can add it as startup into `/etc/rc.local`:
 ```bash
-bundle exec ruby lib/cloudstats.rb
+INSTALL_PATH='the path where the agent is installed' bundle exec ruby lib/cloudstats.rb
 ```
