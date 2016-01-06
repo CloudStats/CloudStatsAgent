@@ -24,6 +24,8 @@ module CloudStats
     def start
       scheduler = Rufus::Scheduler.new
 
+      update_rate = PublicConfig['repo'] == 'agent007' ? '1m' : '5h'
+
       def scheduler.on_error(job, error)
         $logger.error "#{error.class.name}: #{error.message}"
         Airbrake.catch(error, job_id: job.id)
@@ -31,11 +33,13 @@ module CloudStats
 
       $logger.info 'Starting the CloudStats agent'
       $logger.debug 'Scheduling the jobs'
+      $logger.info "Scheduling updates every #{update_rate}"
+
       scheduler.every '1m' do
         CloudStats.perform_update
       end
 
-      scheduler.every '5h' do
+      scheduler.every update_rate do
         catch_and_log_socket_error(Updater.STORAGE_SERVICE) { Updater.new.update }
       end
 
