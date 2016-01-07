@@ -15,6 +15,11 @@ if [ -x "$install_dir/cloudstats.py" ]; then
   rm -rf $install_dir
 fi
 
+if [ -x "/etc/init.d/cloudstats-agent" ]; then
+  echo "Stopping the agent"
+  /etc/init.d/cloudstats-agent stop
+fi
+
 echo "Attempting to install necessary package: tar gzip sysstat iproute2 net-tools"
 if [ -e /etc/debian_version ]
 then
