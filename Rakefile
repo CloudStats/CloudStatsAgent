@@ -53,8 +53,8 @@ namespace :deploy do
   desc 'Deploy the version file'
   task :version_file do
     puts "Changing version file to v.#{VERSION}"
-    File.open('version', 'w') { |f| f.write VERSION }
-    p azure_upload 'version'
+    File.open('cloudstats-version', 'w') { |f| f.write VERSION }
+    p azure_upload 'cloudstats-version'
   end
 end
 
