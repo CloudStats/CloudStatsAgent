@@ -5,9 +5,7 @@ module CloudStats
     stored_key = CloudStats.server_key_from_file(Config[:server_key_path])
     old_stored_key = CloudStats.server_key_from_file(Config[:old_server_key_path])
 
-    valid = stored_key && stored_key.length == 32
-
-    if valid
+    if stored_key
       stored_key
     else
       key = old_stored_key || self.generate_server_key(info)
