@@ -64,7 +64,7 @@ module CloudStats
     end
 
     def get_latest_version
-      open(@update_server + 'cloudststs-version').read.tr("\n", '')
+      open(@update_server + 'cloudstats-version').read.tr("\n", '')
     end
 
     def current_version
