@@ -24,7 +24,7 @@ module CloudStats
     def start
       scheduler = Rufus::Scheduler.new
 
-      update_rate = PublicConfig['repo'] == 'agent007' ? '1m' : '10m'
+      update_rate = PublicConfig['repo'] == 'agent007' ? '1m' : '5h'
 
       def scheduler.on_error(job, error)
         $logger.error "#{error.class.name}: #{error.message}"
