@@ -23,6 +23,6 @@ module CloudStats
   end
 
   def self.generate_server_key(info)
-    SecureRandom.urlsafe_base64(254)
+    SecureRandom.urlsafe_base64(23)
   end
 end
