@@ -65,7 +65,7 @@ stop() {
   # check if it's running
   local pids="$(pidof -cx $keepalive_prog) $(pidof -c $prog)"
 
-  if [ -z "$pids" ]; then
+  if [ ${#pids} -lt 2 ]; then
     echo "$prog not running"
     return 0
   fi
