@@ -43,7 +43,7 @@ eval_cmd() {
 
 start() {
   # check if it's already running
-  local pids=$(pidof $prog)
+  local pids=$(pidof -c $prog)
 
   if [ -n "$pids" ]; then
     echo "$prog (pid $pids) is already running"
@@ -63,7 +63,7 @@ start() {
 
 stop() {
   # check if it's running
-  local pids="$(pidof -x $keepalive_prog) $(pidof $prog)"
+  local pids="$(pidof -cx $keepalive_prog) $(pidof -c $prog)"
 
   if [ -z "$pids" ]; then
     echo "$prog not running"
@@ -77,7 +77,7 @@ stop() {
 
 status() {
   # check if it's running
-  local  pids=$(pidof $prog)
+  local  pids=$(pidof -c $prog)
 
   if [ -n "$pids" ]; then
     echo "$prog (pid $pids) is running"
@@ -88,7 +88,7 @@ status() {
 
 uninstall() {
   # check if it's running
- local pids=$(pidof $prog)
+ local pids=$(pidof -c $prog)
 
   if [ -z "$pids" ]; then
     rm -rf /home/cloudstats_agent
