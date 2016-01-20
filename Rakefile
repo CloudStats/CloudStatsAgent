@@ -10,6 +10,7 @@ VERSION = CloudStats::VERSION
 TRAVELING_RUBY_VERSION = "20150715-2.2.2"
 OUT_DIR = "out"
 DEST_ENVIRONMENT = ENV['DEST_ENVIRONMENT'] || 'staging'
+REPO = ENV['REPO'] || 'agent007'
 
 s3 = Aws::S3::Resource.new(region: 'eu-west-1')
 
@@ -44,6 +45,14 @@ task :deploy => [:package, 'deploy:installer'] do
 end
 
 namespace :deploy do
+  desc 'Deploy to production'
+  task :production do
+    DEST_ENVIRONMENT = 'production'
+    REPO = 'agent'
+
+    Rake::Task[:deploy].invoke
+  end
+
   desc 'Deploy the installer'
   task :installer do
     puts "Uploading installer ..."
@@ -53,8 +62,8 @@ namespace :deploy do
   desc 'Deploy the version file'
   task :version_file do
     puts "Changing version file to v.#{VERSION}"
-    File.open('version', 'w') { |f| f.write VERSION }
-    p azure_upload 'version'
+    File.open('cloudstats-version', 'w') { |f| f.write VERSION }
+    p azure_upload 'cloudstats-version'
   end
 end
 
@@ -188,10 +197,9 @@ end
 
 def azure_upload(local_file, remote_file = nil)
   remote_file ||= local_file
-  repo = ENV['REPO'] || 'agent007'
 
   puts "Uploading the #{local_file} blob..."
-  p `azure storage blob upload -q #{local_file} #{repo} #{remote_file}`
+  p `azure storage blob upload -q #{local_file} #{REPO} #{remote_file}`
 end
 
 # / UTILS
