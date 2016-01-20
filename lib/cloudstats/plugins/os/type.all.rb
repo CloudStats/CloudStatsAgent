@@ -20,9 +20,10 @@ CloudStats::Sysinfo.plugin :os do
     def grep_param(file, param)
       if File.exists? file
         File.open(file, 'r').read.each_line do |line|
-          return $1 if line =~ /^#{param}="(.*)"/
-          return $1 if line =~ /^#{param}=(.*)/
+          return $1 if line =~ /\A#{param}="(.*)"/
+          return $1 if line =~ /\A#{param}=(.*)/
         end
+        return nil
       end
     end
 
