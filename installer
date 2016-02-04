@@ -5,7 +5,7 @@
 #
 
 # installation folder
-install_dir="/home/cloudstats_agent"
+install_dir="/home/monitoring_agent"
 echo "CloudStats agent will be installed in: " $install_dir
 
 if [ -x "$install_dir/cloudstats.py" ]; then
@@ -18,6 +18,11 @@ fi
 if [ -x "/etc/init.d/cloudstats-agent" ]; then
   echo "Stopping the agent"
   /etc/init.d/cloudstats-agent stop
+fi
+
+if [ -x "/etc/init.d/monitoring-agent" ]; then
+  echo "Stopping the agent"
+  /etc/init.d/monitoring-agent stop
 fi
 
 echo "Attempting to install necessary package: tar gzip sysstat iproute2 net-tools"
@@ -40,37 +45,37 @@ archs=`uname -m`
 echo "Downloading ... "
 
 if [ ${archs} = 'x86_64' ]; then
-  curl -L -O --fail 'https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-agent-latest-linux-x86_64.tar.gz'
+  curl -L -O --fail 'https://cloudstatsstorage.blob.core.windows.net/agent/monitoring-agent-latest-linux-x86_64.tar.gz'
 else
   archs='x86'
-  curl -L -O --fail 'https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-agent-latest-linux-x86.tar.gz'
+  curl -L -O --fail 'https://cloudstatsstorage.blob.core.windows.net/agent/monitoring-agent-latest-linux-x86.tar.gz'
 fi
 
 # extracting and placing the files in the right location
 echo "Extracting ... "
-tar zxvf cloudstats-agent-latest-linux-$archs.tar.gz --strip-components 1 >/dev/null
-cp init.d/cloudstats-agent /etc/init.d/
-rm -rf cloudstats-agent-latest-linux-$archs.tar.gz
+tar zxvf monitoring-agent-latest-linux-$archs.tar.gz --strip-components 1 >/dev/null
+cp init.d/monitoring-agent /etc/init.d/
+rm -rf monitoring-agent-latest-linux-$archs.tar.gz
 
 # set permissions and auto start at boot
 echo "Installing ... "
-chmod 755 /etc/init.d/cloudstats-agent
+chmod 755 /etc/init.d/monitoring-agent
  if [ -e /etc/debian_version ]
   then
-    update-rc.d -f cloudstats-agent defaults > /dev/null
+    update-rc.d -f monitoring-agent defaults > /dev/null
   fi
 
   if [ -e /etc/redhat-release ]
   then
-    chkconfig cloudstats-agent on
+    chkconfig monitoring-agent on
   fi
 
 echo "Setting up the account key"
-./cloudstats-agent --setup $1
+./monitoring-agent --setup $1
 
-/etc/init.d/cloudstats-agent start
+/etc/init.d/monitoring-agent start
 
 echo "Installation finished."
 
 echo "Running for the first time"
-./cloudstats-agent --first-time
+./monitoring-agent --first-time
