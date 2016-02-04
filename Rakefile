@@ -5,12 +5,39 @@ require 'yaml'
 require_relative 'lib/cloudstats/helpers/object'
 require_relative 'lib/cloudstats/version'
 
-PACKAGE_NAME = "cloudstats-agent"
+def git_branch
+  `git name-rev --name-only HEAD`.strip
+end
+
 VERSION = CloudStats::VERSION
 TRAVELING_RUBY_VERSION = "20150715-2.2.2"
 OUT_DIR = "out"
 DEST_ENVIRONMENT = ENV['DEST_ENVIRONMENT'] || 'staging'
 REPO = ENV['REPO'] || 'agent007'
+
+PROFILES = {
+  main: {
+    package_name: 'cloudstats-agent',
+    installer_name: 'installer',
+    daemon_name: 'cloudstats-agent',
+    version_file: 'cloudstats-version',
+    branch: 'master',
+    azure_storage_account_var: 'CLOUDSTATS_AZURE_STORAGE_ACCOUNT',
+    azure_storage_access_key_var: 'CLOUDSTATS_AZURE_STORAGE_ACCESS_KEY',
+  },
+
+  partners: {
+    package_name: 'monitoring-agent',
+    installer_name: 'monitoring-installer',
+    daemon_name: 'monitoring-agent',
+    version_file: 'monitoring-version',
+    branch: 'partner_master',
+    azure_storage_account_var: 'MONITORING_AZURE_STORAGE_ACCOUNT',
+    azure_storage_access_key_var: 'MONITORING_AZURE_STORAGE_ACCESS_KEY',
+  }
+}
+
+PROFILE = git_branch == 'partner_master' ? PROFILES[:partners] : PROFILES[:main]
 
 s3 = Aws::S3::Resource.new(region: 'eu-west-1')
 
@@ -31,8 +58,8 @@ task :package => ['package:linux:x86', 'package:linux:x86_64', 'package:osx']
 desc 'Deploy agent'
 task :deploy => [:package, 'deploy:installer'] do
   ['osx', 'linux-x86', 'linux-x86_64'].each do |target|
-    package = "#{PACKAGE_NAME}-#{VERSION}-#{target}.tar.gz"
-    latest_package = "#{PACKAGE_NAME}-latest-#{target}.tar.gz"
+    package = "#{PROFILE[:package_name]}-#{VERSION}-#{target}.tar.gz"
+    latest_package = "#{PROFILE[:package_name]}-latest-#{target}.tar.gz"
 
     puts "Uploading #{package}..."
     p azure_upload "#{OUT_DIR}/#{package}", package
@@ -56,14 +83,61 @@ namespace :deploy do
   desc 'Deploy the installer'
   task :installer do
     puts "Uploading installer ..."
-    p azure_upload 'installer'
+    p azure_upload PROFILE[:installer_name]
   end
 
   desc 'Deploy the version file'
   task :version_file do
     puts "Changing version file to v.#{VERSION}"
-    File.open('cloudstats-version', 'w') { |f| f.write VERSION }
-    p azure_upload 'cloudstats-version'
+    File.open(PROFILE[:version_file], 'w') { |f| f.write VERSION }
+    p azure_upload PROFILE[:version_file]
+  end
+
+  namespace :profile do
+    desc 'Deploy all profiles'
+    task :all do
+      PROFILES.each do |key, profile|
+        puts "Checking out #{profile[:branch]} branch"
+        `git checkout #{profile[:branch]}`
+        Rake::Task["deploy:profile:#{key}"].invoke
+      end
+    end
+
+    namespace :production do
+      PROFILES.keys.push(:all).each do |key|
+        desc "Deploy production agent with #{key} profile"
+        task key do
+          DEST_ENVIRONMENT = 'production'
+          REPO = 'agent'
+          Rake::Task["deploy:profile:#{key}"].invoke
+        end
+      end
+    end
+
+    PROFILES.keys.each do |key|
+      desc "Deploy #{key} profile"
+      task key do
+        PROFILE = PROFILES[key]
+        if git_branch != PROFILE[:branch]
+          puts "---"
+          puts "Please checkout to '#{PROFILE[:branch]}' branch first!"
+          puts "---"
+        else
+          account = ENV[PROFILE[:azure_storage_account_var]]
+          access_key = ENV[PROFILE[:azure_storage_access_key_var]]
+          if "#{account}".empty? || "#{access_key}".empty?
+            puts "---"
+            puts "Please supply #{PROFILE[:azure_storage_account_var]} and #{PROFILE[:azure_storage_access_key_var]} env. variables"
+            puts "---"
+          else
+            puts "Deploying with profile :#{key}"
+            ENV['AZURE_STORAGE_ACCOUNT'] = account
+            ENV['AZURE_STORAGE_ACCESS_KEY'] = access_key
+            Rake::Task[:deploy].invoke
+          end
+        end
+      end
+    end
   end
 end
 
@@ -149,22 +223,22 @@ end
 # UTILS
 
 def create_package(target)
-  package_dir = "#{PACKAGE_NAME}-#{VERSION}-#{target}"
+  package_dir = "#{PROFILE[:package_name]}-#{VERSION}-#{target}"
   sh "rm -rf #{package_dir}"
   sh "mkdir #{package_dir}"
-  sh "cp installer #{package_dir}"
+  sh "cp #{PROFILE[:installer_name]} #{package_dir}"
   sh "mkdir #{package_dir}/init.d"
-  sh "cp init.d/cloudstats-agent #{package_dir}/init.d/"
+  sh "cp init.d/#{PROFILE[:daemon_name]} #{package_dir}/init.d/"
   sh "mkdir -p #{package_dir}/lib/app"
   sh "cp -r lib #{package_dir}/lib/app/"
   sh "echo 'module CloudStats; ENVIRONMENT = \"#{DEST_ENVIRONMENT}\"; end' > #{package_dir}/lib/app/lib/cloudstats/environment.rb"
   # sh "cp config.yml #{package_dir}/lib/app/"
   sh "mkdir #{package_dir}/lib/ruby"
   sh "tar -xzf packaging/traveling-ruby-#{TRAVELING_RUBY_VERSION}-#{target}.tar.gz -C #{package_dir}/lib/ruby"
-  sh "cp packaging/wrapper.sh #{package_dir}/#{PACKAGE_NAME}"
+  sh "cp packaging/wrapper.sh #{package_dir}/#{PROFILE[:package_name]}"
   sh "cp packaging/keepalive #{package_dir}/keepalive"
   sh "cp packaging/reset-key.sh #{package_dir}/reset-key"
-  sh "chmod +x #{package_dir}/#{PACKAGE_NAME}"
+  sh "chmod +x #{package_dir}/#{PROFILE[:package_name]}"
   sh "cp -pR packaging/vendor #{package_dir}/lib/"
   sh "cp Gemfile Gemfile.lock #{package_dir}/lib/vendor/"
   sh "mkdir #{package_dir}/lib/vendor/.bundle"
