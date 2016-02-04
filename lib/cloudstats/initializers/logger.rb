@@ -20,11 +20,11 @@ module CloudStats
 
     def initialize
       logfile = begin
-                  open('/var/log/cloudstats.log', 'a')
+                  open('/var/log/monitoring_agent.log', 'a')
                 rescue
                   nil
                 end
-      logfile = open('./cloudstats.log', 'a') unless logfile
+      logfile = open('./monitoring_agent.log', 'a') unless logfile
       logfile.sync = true
 
       super(TeeIO.new(STDOUT, logfile))

@@ -1,7 +1,7 @@
 const_unset :Config
 const_unset :PublicConfig
 
-$PROGRAM_NAME = 'cloudstats-agent'
+$PROGRAM_NAME = 'monitoring-agent'
 $SRC_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 Config = {
@@ -17,11 +17,11 @@ Config = {
   timeout: 2,
 
   # serializer
-  server_key_path: ENV['SERVER_KEY_PATH'] || "/etc/cloudstats/server.key",
+  server_key_path: ENV['SERVER_KEY_PATH'] || "/etc/monitoring_agent/server.key",
   old_server_key_path: "#{$SRC_PATH}/../server.key",
 
   # agent
-  install_path: ENV['INSTALL_PATH'] || '/home/cloudstats_agent',
+  install_path: ENV['INSTALL_PATH'] || '/home/monitoring_agent',
   update_type:  :keepalive # :restart, :keepalive, :reload
 }
 

@@ -5,7 +5,7 @@ require 'yaml'
 require_relative 'lib/cloudstats/helpers/object'
 require_relative 'lib/cloudstats/version'
 
-PACKAGE_NAME = "cloudstats-agent"
+PACKAGE_NAME = "monitoring-agent"
 VERSION = CloudStats::VERSION
 TRAVELING_RUBY_VERSION = "20150715-2.2.2"
 OUT_DIR = "out"
@@ -16,7 +16,7 @@ s3 = Aws::S3::Resource.new(region: 'eu-west-1')
 
 # Native packages from http://traveling-ruby.s3-us-west-2.amazonaws.com/list.html
 NATIVES = {
-  'nokogiri': '1.6.6.2'
+  'nokogiri' => '1.6.6.2'
 }
 
 desc "REPL with plugins"
@@ -62,8 +62,8 @@ namespace :deploy do
   desc 'Deploy the version file'
   task :version_file do
     puts "Changing version file to v.#{VERSION}"
-    File.open('cloudstats-version', 'w') { |f| f.write VERSION }
-    p azure_upload 'cloudstats-version'
+    File.open('monitoring-version', 'w') { |f| f.write VERSION }
+    p azure_upload 'monitoring-version'
   end
 end
 
@@ -154,7 +154,7 @@ def create_package(target)
   sh "mkdir #{package_dir}"
   sh "cp installer #{package_dir}"
   sh "mkdir #{package_dir}/init.d"
-  sh "cp init.d/cloudstats-agent #{package_dir}/init.d/"
+  sh "cp init.d/monitoring-agent #{package_dir}/init.d/"
   sh "mkdir -p #{package_dir}/lib/app"
   sh "cp -r lib #{package_dir}/lib/app/"
   sh "echo 'module CloudStats; ENVIRONMENT = \"#{DEST_ENVIRONMENT}\"; end' > #{package_dir}/lib/app/lib/cloudstats/environment.rb"

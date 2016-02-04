@@ -11,7 +11,7 @@ module CloudStats
       repo = ENV['REPO'] || PublicConfig['repo'] || 'agent'
       @update_server = "#{Updater.STORAGE_SERVICE}/#{repo}/"
       @app_dir = Config[:install_path]
-      @init_script = PublicConfig['init_script'] || '/etc/init.d/cloudstats-agent'
+      @init_script = PublicConfig['init_script'] || '/etc/init.d/monitoring-agent'
       @update_type = update_type
     end
 
@@ -42,7 +42,7 @@ module CloudStats
       case @update_type
       when :restart
         $logger.info 'Restarting via :restart'
-        exec "/etc/init.d/cloudstats-agent", "restart"
+        exec "/etc/init.d/monitoring-agent", "restart"
       when :keepalive
         $logger.info 'Restarting via :keepalive'
         exit # keepalive will start agent back
@@ -60,11 +60,11 @@ module CloudStats
            else
              "linux-#{OS.architecture}"
            end
-      "cloudstats-agent-#{version}-#{os}.tar.gz"
+      "monitoring-agent-#{version}-#{os}.tar.gz"
     end
 
     def get_latest_version
-      open(@update_server + 'cloudstats-version').read.tr("\n", '')
+      open(@update_server + 'monitoring-version').read.tr("\n", '')
     end
 
     def current_version
@@ -92,7 +92,7 @@ module CloudStats
     end
 
     def update_init_script
-      `cp #{@app_dir}/init.d/cloudstats-agent #{@init_script}`
+      `cp #{@app_dir}/init.d/monitoring-agent #{@init_script}`
     end
   end
 end

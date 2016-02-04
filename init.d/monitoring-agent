@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Daemon Name: CloudStats Monitoring
+# Daemon Name: Monitoring Agent
 #
 # chkconfig: - 58 74
 # description: universal init.d script for the agent
@@ -8,7 +8,7 @@
 #
 
 ### BEGIN INIT INFO
-# Provides:          CloudStats Monitoring
+# Provides:          Server Monitoring
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
@@ -18,11 +18,11 @@
 ### END INIT INFO
 
 # absolute path to the executable library
-homepath='/home/cloudstats_agent'
-progpath='/home/cloudstats_agent/cloudstats-agent'
+homepath='/home/monitoring_agent'
+progpath='/home/monitoring_agent/monitoring-agent'
 
 # binary name
-prog=cloudstats-agent
+prog=monitoring-agent
 keepalive_prog="$homepath/keepalive"
 
 # pid file
@@ -91,18 +91,18 @@ uninstall() {
  local pids=$(pidof -c $prog)
 
   if [ -z "$pids" ]; then
-    rm -rf /home/cloudstats_agent
-    rm -rf /etc/init.d/cloudstats-agent
-    echo "CloudStats Agent has been uninstalled."
+    rm -rf /home/monitoring_agent
+    rm -rf /etc/init.d/monitoring-agent
+    echo "Monitoring Agent has been uninstalled."
     return 0
   fi
   printf "%-50s%s" "Stopping $prog: " ''
   rm -f $pidfile
   kill -9 $pids
-  rm -rf /home/cloudstats_agent
-  rm -rf /etc/init.d/cloudstats-agent
+  rm -rf /home/monitoring_agent
+  rm -rf /etc/init.d/monitoring-agent
   eval_cmd $?
-  echo "CloudStats Agent has been uninstalled."
+  echo "Monitoring Agent has been uninstalled."
 }
 
 case $1 in

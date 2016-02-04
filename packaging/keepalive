@@ -1,7 +1,7 @@
 #!/bin/sh
 
 PROC=$@
-LOG=/var/log/cloudstats.watcher.log
+LOG=/var/log/monitoring_agent.watcher.log
 
 echo `date` >> $LOG
 echo Watching: $PROC >> $LOG
