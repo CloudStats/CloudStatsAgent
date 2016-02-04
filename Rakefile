@@ -56,7 +56,7 @@ namespace :deploy do
   desc 'Deploy the installer'
   task :installer do
     puts "Uploading installer ..."
-    p azure_upload 'installer'
+    p azure_upload 'monitoring-installer'
   end
 
   desc 'Deploy the version file'
@@ -152,7 +152,7 @@ def create_package(target)
   package_dir = "#{PACKAGE_NAME}-#{VERSION}-#{target}"
   sh "rm -rf #{package_dir}"
   sh "mkdir #{package_dir}"
-  sh "cp installer #{package_dir}"
+  sh "cp monitoring-installer #{package_dir}"
   sh "mkdir #{package_dir}/init.d"
   sh "cp init.d/monitoring-agent #{package_dir}/init.d/"
   sh "mkdir -p #{package_dir}/lib/app"

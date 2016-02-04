@@ -6,7 +6,7 @@
 
 # installation folder
 install_dir="/home/monitoring_agent"
-echo "CloudStats agent will be installed in: " $install_dir
+echo "Monitoring agent will be installed in: " $install_dir
 
 if [ -x "$install_dir/cloudstats.py" ]; then
   echo "Removing the old agent"
