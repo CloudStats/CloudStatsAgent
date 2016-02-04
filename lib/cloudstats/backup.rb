@@ -51,7 +51,7 @@ module CloudStats
       notification_link = "#{server_link}/notify?key=#{PublicConfig['key']}"
       message = {
         status: 'success',
-        message: '[Backup::Starting] Starting the backup with the CloudStats agent'
+        message: '[Backup::Starting] Starting the backup with the Monitoring agent'
       }
 
       CloudStats::Publisher.new(notification_link).publish(message)

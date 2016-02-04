@@ -24,7 +24,7 @@ begin
   end
 
   $logger.info ''
-  $logger.info "CloudStats Agent v#{CloudStats::VERSION}"
+  $logger.info "Monitoring Agent v#{CloudStats::VERSION}"
   $logger.info ''
 
   if $enable_repl
@@ -53,8 +53,8 @@ begin
     CloudStats.perform_update
 
   when '--help'
-    puts "CloudStats Agent v.#{CloudStats::VERSION}\n"
-    puts 'Usage: cloudstats-agent [option]'
+    puts "Monitoring Agent v.#{CloudStats::VERSION}\n"
+    puts 'Usage: monitoring-agent [option]'
     puts "\t--update\tUpdate to the latest version"
     puts "\t--first-time\tPerform a first time update"
     puts "\t--setup APIKEY\tSet the APIKEY"
