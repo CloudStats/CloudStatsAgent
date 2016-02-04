@@ -1,0 +1,20 @@
+#!/bin/sh
+
+CURRENT_BRANCH=`git name-rev --name-only HEAD`
+
+if [ "$CURRENT_BRANCH" = "partner_master" ]; then
+  SECOND_BRANCH="master"
+elif [ "$CURRENT_BRANCH" = "master" ]; then
+  SECOND_BRANCH="partner_master"
+else
+  echo "Please checkout to master or partner_master first"
+  exit
+fi
+
+bundle exec rake deploy
+
+git checkout $SECOND_BRANCH
+
+bundle exec rake deploy
+
+git checkout $CURRENT_BRANCH
