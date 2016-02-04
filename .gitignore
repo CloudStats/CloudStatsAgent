@@ -12,3 +12,4 @@ config.yml
 cloudstats-agent
 reset-key
 version
+monitoring-version
