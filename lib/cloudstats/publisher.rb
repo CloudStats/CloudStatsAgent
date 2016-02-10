@@ -1,24 +1,40 @@
 require 'openssl'
 
 module CloudStats
+  # Entry point for publishing reports to server
   class Publisher
-    def initialize(url)
-      @uri = URI.parse(url)
+    attr_reader :client
+
+    def initialize
+      client_driver = HTTPClientDriver.new(url)
+      @client = ReportClient.new(client_driver)
     end
 
-    def publish(data)
-      http = Net::HTTP.new(@uri.host, @uri.port)
-      request = Net::HTTP::Post.new(@uri.path + '?' + @uri.query)
-      if @uri.scheme == 'https'
-        http.use_ssl = true
-        http.ssl_version = :TLSv1_2
-        http.verify_mode = PublicConfig['verify_ssl'] ? OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE
-      end
-      request.add_field('Content-Type', 'application/json')
-      request.body = data.to_json
-      response = http.request(request)
+    def publish
+      $logger.info 'Publishing...'
+      result = client.send_report
+      log_and_parse_result(result) if result
+      $logger.info 'Done publishing'
+    end
 
-      response.body
+    private
+
+    def log_and_parse_result(response)
+      if response['ok']
+        $logger.info "Response: #{response}"
+      else
+        $logger.error 'There was an error posting the status'
+        $logger.error "Response: #{response}"
+      end
+    end
+
+    def url
+      protocol  = Config[:protocol] || 'http'
+      domain    = Config[:domain]
+      port      = Config[:port].nil? ? '' : ":#{Config[:port]}"
+      path      = Config[:uri_path]
+      key       = PublicConfig['key']
+      @url ||= "#{protocol}://api.#{domain}#{port}/#{path}?key=#{key}"
     end
   end
 end

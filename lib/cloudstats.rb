@@ -6,6 +6,7 @@ require 'bytes_converter'
 require 'net/http'
 require 'digest'
 require 'ps-ruby'
+require 'bunny'
 
 require_relative './cloudstats/debug'
 require_relative './cloudstats/reloader'
@@ -20,6 +21,7 @@ begin
   CloudStats::Reloader.watch do
     require_dir './helpers'
     require_dir '.'
+    require_dir './client'
     require_tree './plugins'
   end
 
@@ -50,7 +52,7 @@ begin
     CloudStats::Backup.instance.perform
 
   when '--first-time'
-    CloudStats.perform_update
+    CloudStats::Publisher.new.publish
 
   when '--help'
     puts "CloudStats Agent v.#{CloudStats::VERSION}\n"
@@ -60,7 +62,7 @@ begin
     puts "\t--setup APIKEY\tSet the APIKEY"
 
   else
-    CloudStats.start
+    CloudStats::Scheduler.new.schedule
 
   end
 rescue Exception => e
