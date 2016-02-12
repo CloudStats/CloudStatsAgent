@@ -1,10 +1,14 @@
+require_relative './report_client'
+
 module CloudStats
-  class HTTPClientDriver
+  class HTTPReportClient < ReportClient
     attr_reader :uri
 
     def initialize(url)
       @uri = URI.parse(url)
     end
+
+    protected
 
     def send(payload)
       catch_and_log_socket_error("https://#{uri.host}:#{uri.port}") do

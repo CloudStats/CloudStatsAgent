@@ -1,15 +1,15 @@
 module CloudStats
   class ReportClient
-    attr_reader :client_driver
-
-    def initialize(client_driver)
-      @client_driver = client_driver
-    end
-
     def send_report
       info = collect_info
       data = CloudStats.serialize(server_key, info)
-      client_driver.send(data)
+      send(data)
+    end
+
+    protected
+
+    def send(data)
+      $logger.log "Plain ReportClient won't do anything!"
     end
 
     private

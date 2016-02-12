@@ -6,8 +6,7 @@ module CloudStats
     attr_reader :client
 
     def initialize
-      client_driver = HTTPClientDriver.new(url)
-      @client = ReportClient.new(client_driver)
+      @client = HTTPReportClient.new(url)
     end
 
     def publish
