@@ -2,11 +2,12 @@ require 'rufus/scheduler'
 
 module CloudStats
   class Scheduler
-    attr_reader :publisher, :scheduler
+    attr_reader :publisher, :scheduler, :command_processor
 
     def initialize
       @publisher = Publisher.new
       @scheduler = create_scheduler
+      @command_processor = CommandProcessor.new
     end
 
     def create_scheduler
@@ -19,6 +20,9 @@ module CloudStats
     end
 
     def schedule
+      $logger.info "Starting command processor"
+      command_processor.run
+
       $logger.info "Scheduling reports every 1m"
       scheduler.every '1m' do
         publisher.publish

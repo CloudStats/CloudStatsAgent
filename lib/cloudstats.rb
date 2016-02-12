@@ -8,9 +8,9 @@ require 'digest'
 require 'ps-ruby'
 require 'bunny'
 
-require_relative './cloudstats/debug'
 require_relative './cloudstats/reloader'
 CloudStats::Reloader.watch do
+  require_relative 'initializers/debug'
   require_relative 'initializers/logger'
   require_relative 'initializers/airbrake'
 end
@@ -21,7 +21,9 @@ begin
   CloudStats::Reloader.watch do
     require_dir './helpers'
     require_dir '.'
+    require_dir './rabbitmq'
     require_dir './client'
+    require_dir './server'
     require_tree './plugins'
   end
 
@@ -53,6 +55,9 @@ begin
 
   when '--first-time'
     CloudStats::Publisher.new.publish
+
+  when '--command-processor'
+    CloudStats::CommandProcessor.new(block: true).run
 
   when '--help'
     puts "CloudStats Agent v.#{CloudStats::VERSION}\n"

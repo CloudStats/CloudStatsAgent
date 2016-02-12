@@ -40,3 +40,7 @@ agent or you can add it as startup into `/etc/rc.local`:
 ```bash
 INSTALL_PATH='the path where the agent is installed' bundle exec ruby lib/cloudstats.rb
 ```
+
+RabbiqMQ configuration
+
+plugin rabbitmq-auth-backend-http
