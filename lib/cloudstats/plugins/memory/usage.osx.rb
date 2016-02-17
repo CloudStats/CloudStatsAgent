@@ -44,6 +44,8 @@ CloudStats::Sysinfo.plugin :memory do
         free: memory[:free],
         used: memory[:total] - memory[:free]
       }
+      memory[:cached] = 0
+      memory[:buffers] = 0
 
       memory
     end

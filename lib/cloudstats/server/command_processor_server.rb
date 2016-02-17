@@ -4,19 +4,10 @@ module CloudStats
 
     def initialize(server_driver)
       @server_driver = server_driver
-      @allowed_commands = []
     end
 
     def run
       server_driver.subscribe { |r| handle_request(r) }
-    end
-
-    def allow_command(command)
-      @allowed_commands << command
-    end
-
-    def command_allowed?(command)
-      @allowed_commands.include?(command)
     end
 
     private
@@ -27,13 +18,8 @@ module CloudStats
       args = [args].flatten
 
       if command
-        if command_allowed?(command)
-          $logger.info "Received command: #{command} #{args}"
-          handle_command(request, command, args)
-        else
-          $logger.warn "Received disallowed command: #{command} #{args}"
-          send_reject(request, :command_not_allowed)
-        end
+        $logger.info "Received command: #{command} #{args}"
+        handle_command(request, command, args)
       else
         $logger.warn "Received unknown command: #{request.payload}"
         send_reject(request, :unknown_format)

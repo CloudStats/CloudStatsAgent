@@ -11,8 +11,9 @@ module CloudStats
       end
 
       def send_response(response)
+        $logger.info "Sending response with #{@properties.correlation_id}"
         @exchange.publish(response.to_json, {
-          routing_key: @properties.reply_to,
+          routing_key: "reply",
           correlation_id: @properties.correlation_id
         })
       end
@@ -23,8 +24,8 @@ module CloudStats
     def initialize(connection, queue_name, opts={})
       @connection = connection
       @channel = connection.create_channel
-      @queue = @channel.queue(queue_name)
-      @exchange = @channel.default_exchange
+      @queue = @channel.queue(queue_name, readonly: true)
+      @exchange = @channel.exchange(queue_name, writeonly: true)
       @block = !!opts[:block]
     end
 

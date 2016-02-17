@@ -10,8 +10,6 @@ module CloudStats
         block: block
       })
       @server = CommandProcessorServer.new(server_driver)
-
-      @server.allow_command 'echo'
     end
 
     def run
