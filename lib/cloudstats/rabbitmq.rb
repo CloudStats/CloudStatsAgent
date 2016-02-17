@@ -23,6 +23,7 @@ module CloudStats
 
     def self.create_connection(vhost)
       conn = Bunny.new({
+        host: Config[:rabbitmq_server],
         vhost: "/#{vhost}",
         username: PublicConfig['key'],
         password: ''
