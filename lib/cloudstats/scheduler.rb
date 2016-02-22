@@ -23,6 +23,14 @@ module CloudStats
       $logger.info "Starting command processor"
       command_processor.run
 
+      $logger.info "Scheduling command processor checker"
+      scheduler.every '5s' do
+        unless command_processor.alive?
+          $logger.info "Command Processor is dead"
+          command_processor.run
+        end
+      end
+
       $logger.info "Scheduling reports every 1m"
       scheduler.every '1m' do
         publisher.publish

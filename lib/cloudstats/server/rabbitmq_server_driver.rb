@@ -29,9 +29,9 @@ module CloudStats
       @block = !!opts[:block]
     end
 
-    def subscribe(&block)
+    def subscribe
       $logger.info "Subscribed to queue #{@queue.name}"
-      @queue.subscribe(block: @block) do |delivery_info, properties, payload|
+      @queue.subscribe(block: true) do |delivery_info, properties, payload|
         data = JSON.parse(payload)
         yield Request.new(@exchange, properties, data)
       end

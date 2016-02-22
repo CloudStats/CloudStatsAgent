@@ -6,7 +6,7 @@ $SRC_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 Config = {
   cloudstats_agent_env: 'development',
-  rabbitmq_server: 'sub.cloudstats.me',
+  rabbitmq_server: ENV['RABBITMQ_HOST'] || 'sub.cloudstats.me',
 
   # url params
   protocol: ENV['PROT'] || 'https',

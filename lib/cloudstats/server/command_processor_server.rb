@@ -2,15 +2,34 @@ module CloudStats
   class CommandProcessorServer
     attr_reader :server_driver
 
-    def initialize(server_driver)
+    def initialize(server_driver, opts={})
       @server_driver = server_driver
+      @alive = false
+      @block = !!opts[:block]
     end
 
     def run
-      server_driver.subscribe { |r| handle_request(r) }
+      if @block
+        run_body
+      else
+        Thread.new do
+          run_body
+        end
+      end
+    end
+
+    def alive?
+      @alive
     end
 
     private
+
+    def run_body
+      @alive = true
+      server_driver.subscribe { |r| handle_request(r) }
+    ensure
+      @alive = false
+    end
 
     def handle_request(request)
       command = request.payload['command']
@@ -29,7 +48,7 @@ module CloudStats
     end
 
     def handle_command(request, command, args)
-      exec_string = "#{command} #{args.map(&:to_json).join(' ')}"
+      exec_string = "#{command} #{args.join(' ')}"
       $logger.info "Executing: #{exec_string}"
       output = `#{exec_string}`
       code = $?.exitstatus
