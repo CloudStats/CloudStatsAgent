@@ -4,6 +4,7 @@ module CloudStats
       version: CloudStats::VERSION,
       server_key: server_key,
       server: {
+        remote_calls_enabled: !!PublicConfig['enable_remote_calls'],
         agent_version:   CloudStats::VERSION,
         services:        sysinfo.safe_get(:services),
         cpu_usage:       sysinfo.safe_get(:cpu, :usage),
