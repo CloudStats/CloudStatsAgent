@@ -42,6 +42,7 @@ begin
     $logger.info "Setting up #{ARGV[1]} domain key"
     y = YAML.load('verify_ssl: true')
     y['key'] = ARGV[1]
+    y['remote_calls_enabled'] = ARGV[2..-1].include?('--enable-remote-calls')
 
     open(Config[:public_config_path], 'w') do |f|
       f.write y.to_yaml
