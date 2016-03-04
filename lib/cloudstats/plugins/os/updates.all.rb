@@ -24,7 +24,7 @@ CloudStats::Sysinfo.plugin :os do
       `yum check-update`.each_line.grep(finder).count
     end
 
-    run do
+    after_sleep do
       pending_updates = if has? 'apt-get'
                           aptget
                         elsif has? 'pacman'
