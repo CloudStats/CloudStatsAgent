@@ -8,7 +8,9 @@ module CloudStats
     attr_reader :pid
 
     def initialize(options = {})
-      @timeout = options[:timeout] || 10
+      @timeout = options[:timeout] ||
+                 PublicConfig['command_executor_timeout'] ||
+                 Config[:command_executor_timeout]
 
       @stdout = ''
       @stderr = ''
@@ -34,15 +36,19 @@ module CloudStats
 
     private
 
+    def wait_for(pid)
+      _, code = Process.wait2(pid)
+      @exit_code = code.to_i
+      @fulfilled = true
+    end
+
     def spawn(command, wout, werr)
       @exit_code = -1
       @fulfilled = false
       @pid = Process.spawn(command, out: wout, err: werr)
 
       Timeout.timeout(timeout) do
-        _, code = Process.wait2(pid)
-        @exit_code = code.to_i
-        @fulfilled = true
+        wait_for(@pid)
       end
     rescue
       Process.kill('KILL', @pid)

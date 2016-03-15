@@ -7,6 +7,7 @@ $SRC_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 Config = {
   cloudstats_agent_env: 'development',
   rabbitmq_server: ENV['RABBITMQ_HOST'] || 'sub.cloudstats.me',
+  command_executor_timeout: 300,
 
   # url params
   protocol: ENV['PROT'] || 'https',
@@ -18,7 +19,7 @@ Config = {
   timeout: 2,
 
   # serializer
-  server_key_path: ENV['SERVER_KEY_PATH'] || "/etc/cloudstats/server.key",
+  server_key_path: ENV['SERVER_KEY_PATH'] || '/etc/cloudstats/server.key',
   old_server_key_path: "#{$SRC_PATH}/../server.key",
 
   # agent
