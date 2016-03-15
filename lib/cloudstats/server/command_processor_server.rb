@@ -1,11 +1,16 @@
-module CloudStats
-  class CommandProcessorServer
-    attr_reader :server_driver
+require_relative './command_executor'
 
-    def initialize(server_driver, opts={})
+module CloudStats
+  # Listens to requests and responses command result
+  class CommandProcessorServer
+    attr_reader :server_driver, :executor, :alive
+    alias alive? alive
+
+    def initialize(server_driver, opts = {})
       @server_driver = server_driver
       @alive = false
-      @block = !!opts[:block]
+      @block = opts.include?(:block) ? opts[:block] : false
+      @executor = CommandExecutor.new
     end
 
     def run
@@ -16,10 +21,6 @@ module CloudStats
           run_body
         end
       end
-    end
-
-    def alive?
-      @alive
     end
 
     private
@@ -50,20 +51,29 @@ module CloudStats
     def handle_command(request, command, args)
       exec_string = "#{command} #{args.join(' ')}"
       $logger.info "Executing: #{exec_string}"
-      output = `#{exec_string}`
-      code = $?.exitstatus
-      request.send_response({
-        output: output,
-        exit_code: code,
-        fulfilled: true
-      })
+
+      executor.execute!(exec_string)
+
+      $logger.info({
+        output: executor.stdout,
+        error: executor.stderr,
+        exit_code: executor.exit_code,
+        fulfilled: executor.fulfilled
+      }.to_json)
+
+      request.send_response(
+        output: executor.stdout,
+        error: executor.stderr,
+        exit_code: executor.exit_code,
+        fulfilled: executor.fulfilled
+      )
     end
 
     def send_reject(request, message)
-      request.send_response({
+      request.send_response(
         fulfilled: false,
         error: message
-      })
+      )
     end
   end
 end
