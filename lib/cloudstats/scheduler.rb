@@ -1,83 +1,62 @@
 require 'rufus/scheduler'
 
 module CloudStats
-  class << self
-    def perform_update
-      $logger.info 'Collecting information'
-      info = Sysinfo.load {}
-      $logger.info '[DONE]'
+  class Scheduler
+    attr_reader :publisher, :scheduler, :command_processor
 
-      $logger.info 'Publishing...'
-      catch_and_log_socket_error('https://api.cloudstats.me') do
-        response = CloudStats.publish(info)
-
-        if response['ok']
-          $logger.info "Response: #{response}"
-        else
-          $logger.error 'There was an error posting the status'
-          $logger.error "Response: #{response}"
-        end
-        $logger.info '[DONE]'
-      end
+    def initialize
+      @publisher = Publisher.new
+      @scheduler = create_scheduler
+      @command_processor = CommandProcessor.new
     end
 
-    def start
+    def create_scheduler
       scheduler = Rufus::Scheduler.new
-
-      update_rate = PublicConfig['repo'] == 'agent007' ? '1m' : '5h'
-
       def scheduler.on_error(job, error)
         $logger.error "#{error.class.name}: #{error.message}"
         Airbrake.catch(error, job_id: job.id)
       end
+      scheduler
+    end
 
-      $logger.info 'Starting the CloudStats agent'
-      $logger.debug 'Scheduling the jobs'
-      $logger.info "Scheduling updates every #{update_rate}"
+    def schedule
 
+      if !!PublicConfig['enable_remote_calls']
+        $logger.info "Starting command processor"
+        command_processor.run
+
+        $logger.info "Scheduling command processor checker"
+        scheduler.every '5s' do
+          unless command_processor.alive?
+            $logger.info "Command Processor is dead"
+            command_processor.run
+          end
+        end
+      end
+
+      $logger.info "Scheduling reports every 1m"
       scheduler.every '1m' do
-        CloudStats.perform_update
+        publisher.publish
       end
 
+      $logger.info "Scheduling updates every #{update_rate}"
       scheduler.every update_rate do
-        catch_and_log_socket_error(Updater.STORAGE_SERVICE) { Updater.new.update }
+        $logger.catch_and_log_socket_error(Updater.STORAGE_SERVICE) do
+          Updater.new.update
+        end
       end
 
+      $logger.info "Scheduling backups"
       scheduler.cron '0 0 * * *' do
         CloudStats::Backup.instance.perform
       end
       scheduler.join
     end
 
-    def publish(info)
-      url       = CloudStats.url
-      publisher = CloudStats::Publisher.new(url)
-      key       = CloudStats.server_key(info)
-      data      = CloudStats.serialize(key, info)
-      publisher.publish(data)
-    end
+    private
 
-    def url
-      protocol  = Config[:protocol] || 'http'
-      domain    = Config[:domain]
-      port      = Config[:port].nil? ? '' : ":#{Config[:port]}"
-      path      = Config[:uri_path]
-      key       = PublicConfig['key']
-
-      @@_url ||= "#{protocol}://api.#{domain}#{port}/#{path}?key=#{key}"
-    end
-
-    def catch_and_log_socket_error(url, &block)
-      begin
-        block.call
-      rescue SocketError => e
-        $logger.error "Could not reach #{url}.\n
-        It could be due to a faulty network or DNS.\n
-        Please check if you can ping and load the api.cloudstats.me page from
-        this server, otherwise please contact the CloudStats support.\n
-        Please include in you report the following error:
-        #{e}"
-      end
+    def update_rate
+      PublicConfig['repo'] == 'agent007' ? '1m' : '5h'
     end
   end
 end

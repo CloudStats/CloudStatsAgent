@@ -6,10 +6,11 @@ require 'bytes_converter'
 require 'net/http'
 require 'digest'
 require 'ps-ruby'
+require 'bunny'
 
-require_relative './cloudstats/debug'
 require_relative './cloudstats/reloader'
 CloudStats::Reloader.watch do
+  require_relative 'initializers/debug'
   require_relative 'initializers/logger'
   require_relative 'initializers/airbrake'
 end
@@ -20,6 +21,9 @@ begin
   CloudStats::Reloader.watch do
     require_dir './helpers'
     require_dir '.'
+    require_dir './rabbitmq'
+    require_dir './client'
+    require_dir './server'
     require_tree './plugins'
   end
 
@@ -38,6 +42,7 @@ begin
     $logger.info "Setting up #{ARGV[1]} domain key"
     y = YAML.load('verify_ssl: true')
     y['key'] = ARGV[1]
+    y['enable_remote_calls'] = ARGV[2..-1].include?('--enable-remote-calls')
 
     open(Config[:public_config_path], 'w') do |f|
       f.write y.to_yaml
@@ -50,7 +55,10 @@ begin
     CloudStats::Backup.instance.perform
 
   when '--first-time'
-    CloudStats.perform_update
+    CloudStats::Publisher.new.publish
+
+  when '--command-processor'
+    CloudStats::CommandProcessor.new(block: true).run
 
   when '--help'
     puts "Monitoring Agent v.#{CloudStats::VERSION}\n"
@@ -60,7 +68,7 @@ begin
     puts "\t--setup APIKEY\tSet the APIKEY"
 
   else
-    CloudStats.start
+    CloudStats::Scheduler.new.schedule
 
   end
 rescue Exception => e

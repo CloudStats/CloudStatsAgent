@@ -76,6 +76,7 @@ GEM
     airbrake (4.3.2)
       builder
       multi_json
+    amq-protocol (2.0.1)
     atomic (1.1.14)
     atomic (1.1.14-java)
     aws-sdk (2.1.30)
@@ -99,6 +100,8 @@ GEM
     bond (0.5.1-java)
     buftok (0.2.0)
     builder (3.2.2)
+    bunny (2.2.2)
+      amq-protocol (>= 2.0.1)
     bytes_converter (0.0.5)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
@@ -296,6 +299,7 @@ DEPENDENCIES
   aws-sdk
   azure
   backup (~> 4.1.1)!
+  bunny
   bytes_converter
   i18n
   nokogiri (= 1.6.6.2)

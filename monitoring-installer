@@ -71,7 +71,7 @@ chmod 755 /etc/init.d/monitoring-agent
   fi
 
 echo "Setting up the account key"
-./monitoring-agent --setup $1
+./monitoring-agent --setup "$@"
 
 /etc/init.d/monitoring-agent start
 
