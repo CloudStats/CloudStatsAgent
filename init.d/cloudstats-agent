@@ -88,17 +88,8 @@ status() {
 
 uninstall() {
   # check if it's running
- local pids=$(pidof -c $prog)
+  stop
 
-  if [ -z "$pids" ]; then
-    rm -rf /home/cloudstats_agent
-    rm -rf /etc/init.d/cloudstats-agent
-    echo "CloudStats Agent has been uninstalled."
-    return 0
-  fi
-  printf "%-50s%s" "Stopping $prog: " ''
-  rm -f $pidfile
-  kill -9 $pids
   rm -rf /home/cloudstats_agent
   rm -rf /etc/init.d/cloudstats-agent
   eval_cmd $?
