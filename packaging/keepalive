@@ -3,13 +3,13 @@
 PROC=$@
 LOG=/var/log/monitoring_agent.watcher.log
 
-echo `date` >> $LOG
-echo Watching: $PROC >> $LOG
+# echo `date` >> $LOG
+# echo Watching: $PROC >> $LOG
 $PROC
 
 while :
 do
-  echo `date` >> $LOG
-  echo Running again: $PROC >> $LOG
+  # echo `date` >> $LOG
+  # echo Running again: $PROC >> $LOG
   $PROC
 done
