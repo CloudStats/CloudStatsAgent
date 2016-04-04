@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'bytes_converter'
 gem 'rufus-scheduler'

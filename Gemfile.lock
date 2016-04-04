@@ -69,7 +69,7 @@ GIT
       xml-simple (= 1.1.4)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     CFPropertyList (2.3.1)
     addressable (2.3.5)
@@ -310,4 +310,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
