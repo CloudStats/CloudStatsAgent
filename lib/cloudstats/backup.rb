@@ -53,8 +53,8 @@ module CloudStats
         status: 'success',
         message: '[Backup::Starting] Starting the backup with the CloudStats agent'
       }
-
-      CloudStats::Publisher.new(notification_link).publish(message)
+      $logger.info notification_link
+       HTTPReportClient.new(notification_link).send(message)
     end
 
     def port
