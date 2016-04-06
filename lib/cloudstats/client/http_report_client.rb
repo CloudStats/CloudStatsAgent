@@ -8,8 +8,6 @@ module CloudStats
       @uri = URI.parse(url)
     end
 
-    protected
-
     def send(payload)
       $logger.catch_and_log_socket_error("https://#{uri.host}:#{uri.port}") do
         send_request(payload)
