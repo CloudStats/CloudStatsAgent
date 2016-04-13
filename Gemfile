@@ -10,7 +10,7 @@ gem 'azure'
 gem 'bunny'
 
 gem 'i18n' # needed for airbrake
-gem 'airbrake'
+gem 'airbrake', '~> 4.3.2'
 
 group :development, :test do
   gem 'rspec'

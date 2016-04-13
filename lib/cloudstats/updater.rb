@@ -33,7 +33,7 @@ module CloudStats
 
       download(current_package_name)
       install(current_package_name)
-      update_init_script
+      update_init_script unless PublicConfig['disable_init_script_update']
       remove_archive(current_package_name)
 
       Reloader.reload
