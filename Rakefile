@@ -22,8 +22,8 @@ PROFILES = {
     daemon_name: 'cloudstats-agent',
     version_file: 'cloudstats-version',
     branch: 'master',
-    azure_storage_account_var: 'CLOUDSTATS_AZURE_STORAGE_ACCOUNT',
-    azure_storage_access_key_var: 'CLOUDSTATS_AZURE_STORAGE_ACCESS_KEY',
+    azure_storage_account_var: 'cloudstatsstorage',
+    azure_storage_access_key_var: ENV['AZURE_STORAGE_ACCESS_KEY'],
   },
 
   partners: {
@@ -32,8 +32,8 @@ PROFILES = {
     daemon_name: 'monitoring-agent',
     version_file: 'monitoring-version',
     branch: 'partner_master',
-    azure_storage_account_var: 'MONITORING_AZURE_STORAGE_ACCOUNT',
-    azure_storage_access_key_var: 'MONITORING_AZURE_STORAGE_ACCESS_KEY',
+    azure_storage_account_var: 'monitoringagent',
+    azure_storage_access_key_var: ENV['MONITORING_AGENT_AZURE_STORAGE_KEY'],
   }
 }
 
