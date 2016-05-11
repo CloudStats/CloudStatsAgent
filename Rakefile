@@ -123,11 +123,11 @@ namespace :deploy do
           puts "Please checkout to '#{PROFILE[:branch]}' branch first!"
           puts "---"
         else
-          account = ENV[PROFILE[:azure_storage_account_var]]
-          access_key = ENV[PROFILE[:azure_storage_access_key_var]]
+          account = azure_storage_account_var
+          access_key = azure_storage_access_key_var
           if "#{account}".empty? || "#{access_key}".empty?
             puts "---"
-            puts "Please supply #{PROFILE[:azure_storage_account_var]} and #{PROFILE[:azure_storage_access_key_var]} env. variables"
+            puts "Please supply azure_storage_account_var and azure_storage_access_key_var env. variables"
             puts "---"
           else
             puts "Deploying with profile :#{key}"
