@@ -24,6 +24,7 @@ Config = {
 
   # agent
   install_path: ENV['INSTALL_PATH'] || '/home/cloudstats_agent',
+  update_storage_service: 'https://cloudstatsstorage.blob.core.windows.net',
   update_type:  :keepalive # :restart, :keepalive, :reload
 }
 
