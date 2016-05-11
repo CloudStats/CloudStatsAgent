@@ -77,7 +77,7 @@ namespace :deploy do
     DEST_ENVIRONMENT = 'production'
     REPO = 'agent'
 
-    Rake::Task['deploy:profile:production:all'].invoke
+    Rake::Task[:deploy].invoke
   end
 
   desc 'Deploy the installer'
