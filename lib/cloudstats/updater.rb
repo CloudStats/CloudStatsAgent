@@ -4,7 +4,7 @@ require_relative 'version.rb'
 module CloudStats
   class Updater
     def self.STORAGE_SERVICE
-      'https://cloudstatsstorage.blob.core.windows.net'
+      Config[:update_storage_service]
     end
 
     def initialize(update_type: Config[:update_type])
