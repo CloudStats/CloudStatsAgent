@@ -123,8 +123,8 @@ namespace :deploy do
           puts "Please checkout to '#{PROFILE[:branch]}' branch first!"
           puts "---"
         else
-          account = azure_storage_account_var
-          access_key = azure_storage_access_key_var
+          account = PROFILE[:azure_storage_account_var]
+          access_key = PROFILE[:azure_storage_access_key_var]
           if "#{account}".empty? || "#{access_key}".empty?
             puts "---"
             puts "Please supply azure_storage_account_var and azure_storage_access_key_var env. variables"
@@ -273,7 +273,7 @@ def azure_upload(local_file, remote_file = nil)
   remote_file ||= local_file
 
   puts "Uploading the #{local_file} blob..."
-  p `azure storage blob upload -q #{local_file} #{REPO} #{remote_file}`
+  p `AZURE_STORAGE_ACCOUNT=#{PROFILE[:azure_storage_account_var]} AZURE_STORAGE_ACCESS_KEY=#{PROFILE[:azure_storage_access_key_var]} azure storage blob upload -q #{local_file} #{REPO} #{remote_file}`
 end
 
 # / UTILS
