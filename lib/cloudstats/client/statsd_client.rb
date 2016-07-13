@@ -1,7 +1,6 @@
 require 'statsd-ruby'
 require_relative './report_client'
 
-
 module CloudStats
   class StatsdClient < ReportClient
     def initialize
@@ -42,6 +41,6 @@ module CloudStats
       end
     end
 
-    {ok: true}
+    { ok: true }
   end
 end
