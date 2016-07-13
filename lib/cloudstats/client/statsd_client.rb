@@ -22,19 +22,19 @@ module CloudStats
       end
       payload[:server].delete(:processes)
 
-      payload[:server][:disks].each do |k, used, available|
-        @host.gauge "#{server_key}_#{k}_used", used
-        @host.gauge "#{server_key}_#{k}_available", available
-      end
+      # payload[:server][:disks].each do |k, used, available|
+      #   @host.gauge "#{k}_used.#{server_key}.#{PublicConfig['key']}", used
+      #   @host.gauge "#{k}_available.#{server_key}.#{PublicConfig['key']}", available
+      # end
+      #
+      # payload[:server].delete(:disks)
 
-      payload[:server].delete(:disks)
-
-      payload[:server][:interfaces].each do |k, rx, tx|
-        @host.gauge "#{server_key}_#{k}_rx", rx
-        @host.gauge "#{server_key}_#{k}_tx", tx
-      end
-
-      payload[:server].delete(:interfaces)
+      # payload[:server][:interfaces].each do |k, rx, tx|
+      #   @host.gauge "#{k}_rx.#{server_key}.#{PublicConfig['key']}", rx
+      #   @host.gauge "#{k}_tx.#{server_key}.#{PublicConfig['key']}", tx
+      # end
+      #
+      # payload[:server].delete(:interfaces)
 
       payload[:server].each do |k, v|
         # puts "#{server_key}_#{k} #{v}\n"
