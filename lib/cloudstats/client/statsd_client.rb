@@ -38,7 +38,7 @@ module CloudStats
 
       payload[:server].each do |k, v|
         # puts "#{server_key}_#{k} #{v}\n"
-        @host.gauge "#{server_key}_#{k}", v
+        @host.gauge "#{k}.#{server_key}.#{PublicConfig['key']}", v
       end
     end
 
