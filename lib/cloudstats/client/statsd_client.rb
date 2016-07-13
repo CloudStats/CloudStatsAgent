@@ -11,7 +11,7 @@ module CloudStats
     def send(payload)
       [
         :services, :ps, :remote_calls_enabled, :agent_version, :os, :uptime,
-        :kernel, :release, :hostname, :vms, :disk_smart
+        :kernel, :release, :hostname, :vms, :disk_smart, :disks, :interfaces
       ].each do |el|
         payload[:server].delete(el)
       end
