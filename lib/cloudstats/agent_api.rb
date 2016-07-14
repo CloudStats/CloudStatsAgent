@@ -7,7 +7,13 @@ module CloudStats
     def self.grab_server_id
       uri = URI("#{AgentApi.api_path}/server_id?key=#{PublicConfig['key']}&server_key=#{CloudStats.server_key(nil)}")
 
-      JSON.parse(Net::HTTP.get(uri))['id']
+      begin
+        JSON.parse(Net::HTTP.get(uri))['id']
+      rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Timeout::Error, JSON::ParserError => e
+        $logger.error "Error getting the server id #{e}"
+
+        nil
+      end
     end
 
     def self.api_path
