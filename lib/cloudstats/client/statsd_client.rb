@@ -16,8 +16,8 @@ module CloudStats
       end
 
       payload[:server][:processes][0..9].each do |k|
-        @host.gauge "process_cpu.#{server_key}.#{PublicConfig['key']}.#{k[:command]}", k[:cpu]
-        @host.gauge "process_mem.#{server_key}.#{PublicConfig['key']}.#{k[:command]}", k[:mem]
+        @host.gauge "process_cpu.#{AgentApi.server_id}.#{k[:command]}", k[:cpu]
+        @host.gauge "process_mem.#{AgentApi.server_id}.#{k[:command]}", k[:mem]
       end
       payload[:server].delete(:processes)
 
@@ -37,7 +37,7 @@ module CloudStats
 
       payload[:server].each do |k, v|
         # puts "#{server_key}_#{k} #{v}\n"
-        @host.gauge "#{k}.#{server_key}.#{PublicConfig['key']}", v
+        @host.gauge "#{k}.#{AgentApi.server_id}", v
       end
     end
 
