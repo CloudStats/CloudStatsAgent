@@ -7,11 +7,13 @@ module CloudStats
 
     def initialize
       @client = HTTPReportClient.new(url)
+      @client2 = StatsdClient.new
     end
 
     def publish
       $logger.info 'Publishing...'
       result = client.send_report
+      @client2.send_report
       log_and_parse_result(result) if result
       $logger.info 'Done publishing'
     end
