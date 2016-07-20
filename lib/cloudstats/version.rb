@@ -1,3 +1,3 @@
 module CloudStats
-  VERSION = '1.7.0'.freeze
+  VERSION = '1.7.0.1'.freeze
 end
