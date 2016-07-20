@@ -17,7 +17,8 @@ Config = {
 
   # statsd
   statsd_host: ENV['STATSD_HOST'] || 'data1.cloudstats.me',
-  statsd_port: ENV['STATSD_PORT'] || 8125,
+  statsd_port: ENV['STATSD_PORT'] || 8127,
+  statsd_protocol: ENV['STATSD_PROTOCOL'] || 'tcp',
 
   # sysinfo params
   timeout: 2,
