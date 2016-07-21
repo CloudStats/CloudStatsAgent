@@ -15,11 +15,6 @@ Config = {
   port:     ENV['PORT'] || 443,
   uri_path: 'agent_api/status',
 
-  # statsd
-  statsd_host: ENV['STATSD_HOST'] || 'data1.cloudstats.me',
-  statsd_port: ENV['STATSD_PORT'] || 8127,
-  statsd_protocol: ENV['STATSD_PROTOCOL'] || 'tcp',
-
   # sysinfo params
   timeout: 2,
 
@@ -34,5 +29,3 @@ Config = {
 }
 
 Config[:public_config_path] = "#{Config[:install_path]}/config.yml"
-
-PublicConfig = YAML.load(File.read(Config[:public_config_path])) rescue {}

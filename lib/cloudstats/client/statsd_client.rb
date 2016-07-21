@@ -4,7 +4,11 @@ require_relative './report_client'
 module CloudStats
   class StatsdClient < ReportClient
     def initialize
-      @host = Statsd.new Config[:statsd_host], Config[:statsd_port], Config[:statsd_protocol].to_sym
+      @host = Statsd.new(
+        PublicConfig['statsd_host'],
+        PublicConfig['statsd_port'],
+        PublicConfig['statsd_protocol'].to_sym
+      )
     end
 
     def send(payload)
