@@ -1,3 +1,5 @@
+const_unset :PublicConfig
+
 PublicConfig = YAML.load(File.read(Config[:public_config_path])) rescue {}
 
 PublicConfig.define_singleton_method(:save_to_yml) do

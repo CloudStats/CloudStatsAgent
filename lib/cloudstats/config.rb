@@ -1,5 +1,4 @@
 const_unset :Config
-const_unset :PublicConfig
 
 $PROGRAM_NAME = 'cloudstats-agent'
 $SRC_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..'))
