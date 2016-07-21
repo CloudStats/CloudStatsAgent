@@ -52,12 +52,14 @@ module CloudStats
       end
 
       scheduler.in '5m' do
+        $logger.info 'Checking statsd_server'
         new_config = AgentApi.statsd_server
 
-        if new_config['statsd_protocol'] == 'tcp'
+        # if new_config['statsd_protocol'] == 'tcp'
+          $logger.info 'Updating the statsd server'
           PublicConfig.merge!(new_config)
           PublicConfig.save_to_yml
-        end
+        # end
       end
 
       scheduler.join
