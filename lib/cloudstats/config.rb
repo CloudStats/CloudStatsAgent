@@ -15,6 +15,12 @@ Config = {
   port:     ENV['PORT'] || 443,
   uri_path: 'agent_api/status',
 
+  default_statsd: {
+    'statsd_protocol' => 'udp',
+    'statsd_host' => 'data1.cloudstats.me',
+    'statsd_port' => 8125
+  },
+
   # sysinfo params
   timeout: 2,
 

@@ -24,7 +24,7 @@ module CloudStats
       rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Timeout::Error, JSON::ParserError => e
         $logger.error "Error getting the statsd settings #{e}"
 
-        { statsd_protocol: 'udp', statsd_host: 'data1.cloudstats.me', statsd_port: 8125 }
+        Config[:default_statsd]
       end
     end
 

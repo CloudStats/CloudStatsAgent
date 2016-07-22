@@ -5,9 +5,9 @@ module CloudStats
   class StatsdClient < ReportClient
     def initialize
       @host = Statsd.new(
-        PublicConfig['statsd_host'] || 'data1.cloudstats.me',
-        PublicConfig['statsd_port'] || 8125,
-        (PublicConfig['statsd_protocol'] || 'udp').to_sym
+        PublicConfig['statsd_host'] || Config[:default_statsd]['statsd_host'],
+        PublicConfig['statsd_port'] || Config[:default_statsd]['statsd_port'],
+        (PublicConfig['statsd_protocol'] || Config[:default_statsd]['statsd_protocol']).to_sym
       )
     end
 
