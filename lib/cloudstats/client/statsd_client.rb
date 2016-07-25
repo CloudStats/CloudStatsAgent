@@ -46,7 +46,5 @@ module CloudStats
     end
 
     { ok: true }
-  rescue SocketError => e
-    $logger.error "Cannot send data to statsd #{@host.host}:#{@host.port}. Exception => #{e}"
   end
 end
