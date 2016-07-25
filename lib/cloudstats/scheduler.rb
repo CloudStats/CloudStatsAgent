@@ -59,6 +59,8 @@ module CloudStats
           $logger.info 'Updating the statsd server'
           PublicConfig.merge!(new_config)
           PublicConfig.save_to_yml
+
+          exit
         end
       end
 
