@@ -46,7 +46,7 @@ module CloudStats
     end
 
     { ok: true }
-  rescue SocketError => e
-    $logger.error "Cannot send data to statsd #{@host.host}:#{@host.port}. Exception => #{e}"
+  rescue SocketError, Errno::ECONNREFUSED, Errno::ETIMEDOUT, Timeout::Error => e
+    $logger.error "Cannot send data to statsd #{@host.host}:#{@host.port}. Exception => #{e}\nPlease check if you firewall is blocking the connection."
   end
 end
