@@ -3,12 +3,25 @@ require_relative './report_client'
 
 module CloudStats
   class StatsdClient < ReportClient
+    attr_reader :host
+
     def initialize
+      statsd_host = PublicConfig['statsd_host'] || Config[:default_statsd]['statsd_host']
+      statsd_port = PublicConfig['statsd_port'] || Config[:default_statsd]['statsd_port']
+      statsd_protocol = (PublicConfig['statsd_protocol'] || Config[:default_statsd]['statsd_protocol']).to_sym
+
       @host = Statsd.new(
-        PublicConfig['statsd_host'] || Config[:default_statsd]['statsd_host'],
-        PublicConfig['statsd_port'] || Config[:default_statsd]['statsd_port'],
-        (PublicConfig['statsd_protocol'] || Config[:default_statsd]['statsd_protocol']).to_sym
+        statsd_host,
+        statsd_port,
+        statsd_protocol
       )
+
+    rescue SocketError, SystemCallError, Timeout::Error => e
+      $logger.error "Cannot send data to statsd #{statsd_host}:#{statsd_port}. Exception => #{e}\nPlease check if you firewall is blocking the connection."
+    end
+
+    def connected?
+      !@host.nil?
     end
 
     def send(payload)
@@ -46,7 +59,5 @@ module CloudStats
     end
 
     { ok: true }
-  rescue SocketError, Errno::ECONNREFUSED, Errno::ETIMEDOUT, Timeout::Error => e
-    $logger.error "Cannot send data to statsd #{@host.host}:#{@host.port}. Exception => #{e}\nPlease check if you firewall is blocking the connection."
   end
 end
