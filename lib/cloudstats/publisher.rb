@@ -13,7 +13,8 @@ module CloudStats
     def publish
       $logger.info 'Publishing...'
       result = client.send_report
-      @client2.send_report
+      @client2.send_report if @client2.connected?
+
       log_and_parse_result(result) if result
       $logger.info 'Done publishing'
     end
