@@ -4,6 +4,6 @@ export INSTALL_PATH="/home/cloudstats_agent"
 
 while :
 do
-	bundle exec ruby lib/cloudstats.rb --update
+	/home/cloudstats_agent/cloudstats-agent --update
 	sleep 5m
 done
