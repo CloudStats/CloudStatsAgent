@@ -57,7 +57,7 @@ start() {
   local pid=$!
   echo $pid > $pidfile
 
-  ENV=production $homepath/$update_script > /dev/null 2>&1 &
+  $homepath/$update_script > /dev/null 2>&1 &
   local update_pid=$1
   echo $update_pid > $update_pidfile
 
