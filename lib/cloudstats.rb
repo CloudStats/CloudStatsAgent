@@ -76,9 +76,10 @@ begin
   end
 
 rescue Exception => e
-  unless $enable_repl
+  if $enable_repl
+    raise e
+  else
     $logger.fatal "#{e.class.name}: #{e.message}"
     Airbrake.catch(e)
   end
-  raise e
 end
