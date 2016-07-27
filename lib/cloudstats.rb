@@ -73,8 +73,8 @@ begin
 
   else
     CloudStats::Scheduler.new.schedule
-
   end
+
 rescue Exception => e
   unless $enable_repl
     $logger.fatal "#{e.class.name}: #{e.message}"
