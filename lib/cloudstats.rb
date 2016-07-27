@@ -41,8 +41,12 @@ begin
   when '--setup'
     $logger.info "Setting up #{ARGV[1]} domain key"
     y = YAML.load('verify_ssl: true')
-    y['key'] = ARGV[1]
+
+    y['key']                 = ARGV[1]
     y['enable_remote_calls'] = ARGV[2..-1].include?('--enable-remote-calls')
+    y['statsd_host']         = 'data1.cloudstats.me'
+    y['statsd_port']         = 8125
+    y['statsd_protocol']     = 'udp'
 
     open(Config[:public_config_path], 'w') do |f|
       f.write y.to_yaml
@@ -69,12 +73,13 @@ begin
 
   else
     CloudStats::Scheduler.new.schedule
-
   end
+
 rescue Exception => e
-  unless $enable_repl
+  if $enable_repl
+    raise e
+  else
     $logger.fatal "#{e.class.name}: #{e.message}"
     Airbrake.catch(e)
   end
-  raise e
 end
