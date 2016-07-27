@@ -45,10 +45,10 @@ archs=`uname -m`
 echo "Downloading ... "
 
 if [ ${archs} = 'x86_64' ]; then
-  curl -L -O --fail 'https://cloudstatsstorage.blob.core.windows.net/agent/monitoring-agent-latest-linux-x86_64.tar.gz'
+  curl -L -O --fail 'https://monitoringagent.blob.core.windows.net/agent/monitoring-agent-latest-linux-x86_64.tar.gz'
 else
   archs='x86'
-  curl -L -O --fail 'https://cloudstatsstorage.blob.core.windows.net/agent/monitoring-agent-latest-linux-x86.tar.gz'
+  curl -L -O --fail 'https://monitoringagent.blob.core.windows.net/agent/monitoring-agent-latest-linux-x86.tar.gz'
 fi
 
 # extracting and placing the files in the right location
