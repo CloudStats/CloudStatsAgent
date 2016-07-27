@@ -23,11 +23,12 @@ progpath='/home/cloudstats_agent/cloudstats-agent'
 
 # binary name
 prog=cloudstats-agent
+update_script=update_cloudstats.sh
 keepalive_prog="$homepath/keepalive"
 
 # pid file
 pidfile="/var/run/${prog}.pid"
-
+update_pidfile="/var/run/update_cloudstats.pid"
 # check the binary if not there exit
 ! [ -x $progpath ] && echo "$progpath: Agent not found" && exit 1
 
@@ -56,6 +57,10 @@ start() {
   local pid=$!
   echo $pid > $pidfile
 
+  ENV=production $homepath$update_script > /dev/null 2>&1 &
+  local update_pid=$1
+  echo $update_pid > $update_pidfile
+
   # check again if it's running
   ps -p $pid >/dev/null 2>&1
   eval_cmd $?
@@ -63,14 +68,15 @@ start() {
 
 stop() {
   # check if it's running
-  local pids="$(pidof -cx $keepalive_prog) $(pidof -c $prog)"
+  local pids="$(pidof -cx $keepalive_prog) $(pidof -c $prog) $(pidof -cx $update_script)"
 
-  if [ ${#pids} -lt 2 ]; then
+  if [ ${#pids} -lt 3 ]; then
     echo "$prog not running"
     return 0
   fi
   printf "%-50s%s" "Stopping $prog: " ''
   rm -f $pidfile
+  rm -f $update_pidfile
   kill -9 $pids
   eval_cmd $?
 }
