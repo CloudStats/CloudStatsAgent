@@ -238,6 +238,7 @@ def create_package(target)
   sh "cp packaging/wrapper.sh #{package_dir}/#{PROFILE[:package_name]}"
   sh "cp packaging/keepalive #{package_dir}/keepalive"
   sh "cp packaging/reset-key.sh #{package_dir}/reset-key"
+  sh "cp packaging/cagent_updater.sh #{package_dir}/cagent_updater"
   sh "chmod +x #{package_dir}/#{PROFILE[:package_name]}"
   sh "cp -pR packaging/vendor #{package_dir}/lib/"
   sh "cp Gemfile Gemfile.lock #{package_dir}/lib/vendor/"
