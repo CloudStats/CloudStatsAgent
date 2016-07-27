@@ -23,12 +23,12 @@ progpath='/home/cloudstats_agent/cloudstats-agent'
 
 # binary name
 prog=cloudstats-agent
-update_script=update_cloudstats.sh
+update_script=cagent_updater
 keepalive_prog="$homepath/keepalive"
 
 # pid file
 pidfile="/var/run/${prog}.pid"
-update_pidfile="/var/run/update_cloudstats.pid"
+update_pidfile="/var/run/cagent_updater.pid"
 # check the binary if not there exit
 ! [ -x $progpath ] && echo "$progpath: Agent not found" && exit 1
 
