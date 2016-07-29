@@ -7,7 +7,7 @@ gem 'backup', '~> 4.1.1', github: 'otzy007/backup', branch: 'az'
 gem 'nokogiri', '1.6.6.2'
 gem 'azure'
 
-gem 'statsd-ruby', github: 'otzy007/statsd', branch: 'escape_stats'
+gem 'statsd-ruby', github: 'otzy007/statsd'
 gem 'bunny'
 
 gem 'i18n' # needed for airbrake
