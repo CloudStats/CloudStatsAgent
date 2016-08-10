@@ -23,7 +23,7 @@ fi
 echo "Attempting to install necessary package: tar gzip sysstat iproute2 net-tools"
 if [ -e /etc/debian_version ]
 then
-  apt-get install tar gzip sysstat iproute2 net-tools -y > /dev/null
+  apt-get install tar gzip sysstat iproute2 net-tools procps -y > /dev/null
 fi
 
 if [ -e /etc/redhat-release ]
