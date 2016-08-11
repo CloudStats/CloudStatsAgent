@@ -30,7 +30,8 @@ fi
 
 if [ -e /etc/redhat-release ]
 then
-  yum install tar gzip sysstat net-tools iproute2 -y > /dev/null
+  yum install tar gzip sysstat net-tools procps -y > /dev/null
+  yum install iproute2 -y > dev/null
 fi
 
 
