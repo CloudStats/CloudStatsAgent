@@ -26,6 +26,7 @@ then
   apt-get update > /dev/null
   apt-get install tar gzip sysstat net-tools procps -y > /dev/null
   apt-get install iproute2 -y > /dev/null
+  apt-get install iproute -y > /dev/null
 fi
 
 if [ -e /etc/redhat-release ]
