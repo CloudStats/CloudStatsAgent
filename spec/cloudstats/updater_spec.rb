@@ -7,7 +7,7 @@ describe CloudStats::Updater do
   end
 
   it 'should get the latest version from the server' do
-    stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/version")
+    stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-version")
       .with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'})
       .to_return(:status => 200, :body => "0.1.1", :headers => {})
 
@@ -58,7 +58,7 @@ describe CloudStats::Updater do
   end
 
   it 'should update the app' do
-    stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/version").
+    stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-version").
         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => "100.0.1.1", :headers => {})
 
@@ -83,7 +83,7 @@ describe CloudStats::Updater do
   end
 
   it 'should send a message when using the same version' do
-    stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/version").
+    stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-version").
         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => "0.0.1.1", :headers => {})
 
