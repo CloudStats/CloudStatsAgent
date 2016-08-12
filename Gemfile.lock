@@ -70,7 +70,7 @@ GIT
 
 GIT
   remote: git://github.com/otzy007/statsd.git
-  revision: ad05636aed9efbb8c405774329db7af639d33cfc
+  revision: 9ea0c619c373ef21be72dad06461476d1788bdec
   specs:
     statsd-ruby (1.3.0)
 
@@ -319,4 +319,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
