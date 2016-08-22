@@ -59,7 +59,9 @@ begin
     CloudStats::Backup.instance.perform
 
   when '--first-time'
-    CloudStats::Publisher.new.publish
+    publisher = CloudStats::Publisher.new
+    publisher.publish(:http)
+    publisher.publish(:statsd)
 
   when '--command-processor'
     CloudStats::CommandProcessor.new(block: true).run
