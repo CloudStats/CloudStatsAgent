@@ -39,12 +39,12 @@ module CloudStats
         publisher.publish
       end
 
-      $logger.info "Scheduling updates every #{update_rate}"
-      scheduler.every update_rate do
-        $logger.catch_and_log_socket_error(Updater.STORAGE_SERVICE) do
-          Updater.new.update
-        end
-      end
+#      $logger.info "Scheduling updates every #{update_rate}"
+#      scheduler.every update_rate do
+#        $logger.catch_and_log_socket_error(Updater.STORAGE_SERVICE) do
+#          Updater.new.update
+#        end
+#      end
 
       $logger.info "Scheduling backups"
       scheduler.cron '0 0 * * *' do
