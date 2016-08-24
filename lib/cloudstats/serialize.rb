@@ -26,6 +26,8 @@ module CloudStats
         blk_reads:       sysinfo.safe_get(:disk, :read_speed),
         blk_writes:      sysinfo.safe_get(:disk, :write_speed),
         uptime:          sysinfo.safe_get(:os, :uptime),
+        uptime_seconds:  sysinfo.safe_get(:os, :uptime_seconds),
+        users_count:     sysinfo.safe_get(:os, :users),
         connections:     sysinfo.safe_get(:network, :connections_count),
         kernel:          sysinfo.safe_get(:os, :kernel),
         release:         "#{sysinfo.safe_get(:os, :name)} #{sysinfo.safe_get(:os, :version)}",
