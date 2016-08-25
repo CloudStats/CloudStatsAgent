@@ -13,7 +13,7 @@ CloudStats::Sysinfo.plugin :os do
 
   os :osx do
     run do
-      uptime_in_seconds = `sysctl -n kern.boottime`.scan( /\d+/ ).first
+      uptime_in_seconds = (Time.now - Time.at(`sysctl -n kern.boottime`.scan( /\d+/ ).first.to_i)).to_i
 
       format('Mac OS X', `sw_vers -productVersion`.strip, uptime_in_seconds)
     end
