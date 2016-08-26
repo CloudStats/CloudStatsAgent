@@ -26,10 +26,14 @@ module CloudStats
 
     def send(payload)
       [
-        :services, :ps, :remote_calls_enabled, :agent_version, :os, :uptime,
+        :ps, :remote_calls_enabled, :agent_version, :os, :uptime,
         :kernel, :release, :hostname, :vms, :disk_smart, :disks, :interfaces
       ].each do |el|
         payload[:server].delete(el)
+      end
+
+      payload[:server].delete(:services).each do |service, status|
+        @host.gauge "services.#{AgentApi.server_id}.#{service}", (status ? 1 : 0)
       end
 
       payload[:server][:processes][0..9].each do |k|
