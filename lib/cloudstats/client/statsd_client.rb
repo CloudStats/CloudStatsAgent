@@ -41,6 +41,11 @@ module CloudStats
         @host.gauge "disk_available.#{AgentApi.server_id}.#{disk}", available
       end
 
+      payload[:server].delete(:interfaces).each do |interface, interface_in, out|
+        @host.gauge "interface_in.#{AgentApi.server_id}.#{interface}", interface_in
+        @host.gauge "interface_out.#{AgentApi.server_id}.#{interface}", out
+      end
+
       payload[:server][:processes][0..9].each do |k|
         @host.gauge "process_cpu.#{AgentApi.server_id}.#{k[:command]}", k[:cpu]
         @host.gauge "process_mem.#{AgentApi.server_id}.#{k[:command]}", k[:mem]
