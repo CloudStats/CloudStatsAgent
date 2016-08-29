@@ -46,7 +46,7 @@ module CloudStats
         @host.gauge "interface_out.#{AgentApi.server_id}.#{interface}", out
       end
 
-      payload[:server][:processes][0..9].each do |k|
+      payload[:server][:processes].each do |k|
         @host.gauge "process_cpu.#{AgentApi.server_id}.#{k[:command]}", k[:cpu]
         @host.gauge "process_mem.#{AgentApi.server_id}.#{k[:command]}", k[:mem]
       end
