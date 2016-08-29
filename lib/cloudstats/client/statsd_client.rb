@@ -27,13 +27,18 @@ module CloudStats
     def send(payload)
       [
         :ps, :remote_calls_enabled, :agent_version, :os, :uptime,
-        :kernel, :release, :hostname, :vms, :disk_smart, :disks, :interfaces
+        :kernel, :release, :hostname, :vms, :disk_smart, :interfaces
       ].each do |el|
         payload[:server].delete(el)
       end
 
       payload[:server].delete(:services).each do |service, status|
         @host.gauge "services.#{AgentApi.server_id}.#{service}", (status ? 1 : 0)
+      end
+
+      payload[:server].delete(:disks).each do |disk, free, total|
+        @host.gauge "disk_free.#{AgentApi.server_id}.#{disk}", free
+        @host.gauge "disk_available.#{AgentApi.server_id}.#{disk}", total
       end
 
       payload[:server][:processes][0..9].each do |k|
