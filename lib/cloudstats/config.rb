@@ -21,6 +21,10 @@ Config = {
     'statsd_port' => 8125
   },
 
+  default_processes_statsd: {
+    'statsd_host' => 'data2.cloudstats.me'
+  },
+
   # sysinfo params
   timeout: 2,
 
