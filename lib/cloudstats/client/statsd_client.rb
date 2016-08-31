@@ -28,7 +28,7 @@ module CloudStats
     end
 
     def connected?
-      !@host.nil?
+      !@host.nil? && !@processes_host.nil?
     end
 
     def send(payload)
