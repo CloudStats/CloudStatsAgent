@@ -8,19 +8,19 @@ module CloudStats
     def initialize
       statsd_host = PublicConfig['statsd_host'] || Config[:default_statsd]['statsd_host']
       statsd_port = PublicConfig['statsd_port'] || Config[:default_statsd]['statsd_port']
-      statsd_protocol = (PublicConfig['statsd_protocol'] || Config[:default_statsd]['statsd_protocol']).to_sym
+      @statsd_protocol = (PublicConfig['statsd_protocol'] || Config[:default_statsd]['statsd_protocol']).to_sym
       processes_statsd_host = PublicConfig['processes_statsd_host'] || Config[:default_processes_statsd]['statsd_host']
 
       @host = Statsd.new(
         statsd_host,
         statsd_port,
-        statsd_protocol
+        @statsd_protocol
       )
 
       @processes_host = Statsd.new(
         processes_statsd_host,
         statsd_port,
-        statsd_protocol
+        @statsd_protocol
       )
 
     rescue SocketError, SystemCallError, Timeout::Error => e
@@ -38,6 +38,8 @@ module CloudStats
       ].each do |el|
         payload[:server].delete(el)
       end
+
+      @host.gauge "statsd_protocol.#{AgentApi.server_id}.#{@statsd_protocol.to_s}", @statsd_protocol == :udp ? 0 : 1
 
       payload[:server].delete(:services).each do |service, status|
         @host.gauge "services.#{AgentApi.server_id}.#{service}", (status ? 1 : 0)
