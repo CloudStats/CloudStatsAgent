@@ -39,25 +39,25 @@ module CloudStats
         payload[:server].delete(el)
       end
 
-      @host.gauge "statsd_protocol.#{AgentApi.server_id}.#{@statsd_protocol.to_s}", @statsd_protocol == :udp ? 0 : 1
+      @host.gauge "statsd_protocol.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{@statsd_protocol.to_s}", @statsd_protocol == :udp ? 0 : 1
 
       payload[:server].delete(:services).each do |service, status|
-        @host.gauge "services.#{AgentApi.server_id}.#{service}", (status ? 1 : 0)
+        @host.gauge "services.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{service}", (status ? 1 : 0)
       end
 
       payload[:server].delete(:disks).each do |disk, free, available|
-        @host.gauge "disk_free.#{AgentApi.server_id}.#{disk}", free
-        @host.gauge "disk_available.#{AgentApi.server_id}.#{disk}", available
+        @host.gauge "disk_free.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{disk}", free
+        @host.gauge "disk_available.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{disk}", available
       end
 
       payload[:server].delete(:interfaces).each do |interface, interface_in, out|
-        @host.gauge "interface_in.#{AgentApi.server_id}.#{interface}", interface_in
-        @host.gauge "interface_out.#{AgentApi.server_id}.#{interface}", out
+        @host.gauge "interface_in.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", interface_in
+        @host.gauge "interface_out.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", out
       end
 
       payload[:server].delete(:processes).each do |k|
-        @processes_host.gauge "process_cpu.#{AgentApi.server_id}.#{k[:command]}", k[:cpu]
-        @processes_host.gauge "process_mem.#{AgentApi.server_id}.#{k[:command]}", k[:mem]
+        @processes_host.gauge "process_cpu.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:cpu]
+        @processes_host.gauge "process_mem.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:mem]
       end
 
       # payload[:server][:disks].each do |k, used, available|
@@ -76,7 +76,7 @@ module CloudStats
 
       payload[:server].each do |k, v|
         # puts "#{server_key}_#{k} #{v}\n"
-        @host.gauge "#{k}.#{AgentApi.server_id}", v
+        @host.gauge "#{k}.#{AgentApi.server_id}.#{AgentApi.domain_id}", v
       end
     end
 
