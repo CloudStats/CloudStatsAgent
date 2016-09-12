@@ -45,9 +45,9 @@ module CloudStats
         @host.gauge "services.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{service}", (status ? 1 : 0)
       end
 
-      payload[:server].delete(:disks).each do |disk, free, available|
-        @host.gauge "disk_free.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{disk}", free
-        @host.gauge "disk_available.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{disk}", available
+      payload[:server].delete(:disks).each do |disk, used, available|
+        @host.gauge "partition_used.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{disk}", used
+        @host.gauge "partition_free.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{disk}", available
       end
 
       payload[:server].delete(:interfaces).each do |interface, interface_in, out|
