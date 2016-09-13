@@ -63,6 +63,8 @@ begin
     publisher.publish(:http)
     publisher.publish(:statsd)
 
+    CloudStats::StatsdShard.store_statsd_host
+
   when '--command-processor'
     CloudStats::CommandProcessor.new(block: true).run
 

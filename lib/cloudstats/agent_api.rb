@@ -32,6 +32,18 @@ module CloudStats
       end
     end
 
+    def self.statsd_shard
+      uri = URI("#{AgentApi.api_path}/statsd_shard?#{AgentApi.params}")
+
+      begin
+        JSON.parse(Net::HTTP.get(uri))['shard']
+      rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Timeout::Error, JSON::ParserError => e
+        $logger.error "Error getting the shard server #{e}"
+
+        nil
+      end
+    end
+
     def self.statsd_server
       uri = URI("#{AgentApi.api_path}/statsd_server?#{AgentApi.params}")
 

@@ -5,6 +5,7 @@ module CloudStats
     attr_reader :publisher, :scheduler, :command_processor
 
     def initialize
+      CloudStats::StatsdShard.store_statsd_host
       @publisher = Publisher.new
       @scheduler = create_scheduler
       @command_processor = CommandProcessor.new
@@ -38,6 +39,11 @@ module CloudStats
       scheduler.every '1m' do
         publisher.publish(:statsd)
         publisher.publish(:http)
+      end
+
+      $logger.info 'Scheduling shard check every 6 hours'
+      scheduler.every '6h' do
+        CloudStats::StatsdShard.store_statsd_host
       end
 
       $logger.info "Scheduling http reports every 12 hours"
