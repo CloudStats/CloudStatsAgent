@@ -18,7 +18,7 @@ CloudStats::Sysinfo.plugin :disk do
           when /^Filesystem\s+1024-blocks/
             next
           when /^(.+?)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+\%)\s+(.+)$/
-            [$1, $3.to_f * 1024, $4.to_f * 1024]
+            [$1, $3.to_f * 1024, $4.to_f * 1024, $3.to_f / ($3.to_f + $4.to_f) * 100]
           end
         end
         .reject(&:nil?)
@@ -39,7 +39,8 @@ CloudStats::Sysinfo.plugin :disk do
           [
             line[0].to_s,
             line[2].to_f * 1024,
-            line[3].to_f * 1024
+            line[3].to_f * 1024,
+            line[2].to_f / (line[2].to_f + line[3].to_f) * 100
           ]
         end
       usage = disks.map { |x| x[1..2] }.sum2
