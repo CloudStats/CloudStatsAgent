@@ -69,7 +69,9 @@ CloudStats::Sysinfo.plugin :memory do
       end
       memory[:summary] = {
         free: (memory[:free] + memory[:cached] + memory[:buffers]),
-        used: (memory[:total] - memory[:free] - memory[:cached] - memory[:buffers])
+        used: (memory[:total] - memory[:free] - memory[:cached] - memory[:buffers]),
+        total: memory[:total],
+        used_perc: (memory[:total] - memory[:free]) / memory[:total] * 100
       }
       memory
     end
