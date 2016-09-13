@@ -5,7 +5,9 @@ CloudStats::Sysinfo.plugin :disk do
       all: disks,
       used: usage[0],
       available: usage[1],
-      total: usage[0] + usage[1]
+      total: usage[0] + usage[1],
+      used_perc: usage[0] / (usage[0] + usage[1]) * 100,
+      free_perc: usage[1] / (usage[0] + usage[1]) * 100
     }
   end
 
