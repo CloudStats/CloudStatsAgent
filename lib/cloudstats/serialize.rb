@@ -20,6 +20,7 @@ module CloudStats
         load_fifteen:    sysinfo.safe_get(:cpu, :load, :fifteen_minutes),
         net_in:          sysinfo.safe_get(:network, :rx_speed),
         net_out:         sysinfo.safe_get(:network, :tx_speed),
+        net_total:       sysinfo.safe_get(:network, :rx_speed) + sysinfo.safe_get(:network, :tx_speed),
         number_of_cpus:  sysinfo.safe_get(:cpu, :count),
         os:              sysinfo.safe_get(:os, :type),
         ps:              sysinfo.safe_get(:processes, :ps),
