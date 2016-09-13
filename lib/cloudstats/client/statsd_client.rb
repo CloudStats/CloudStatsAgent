@@ -51,9 +51,10 @@ module CloudStats
         @host.gauge "partition_perc.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{disk}", perc
       end
 
-      payload[:server].delete(:interfaces).each do |interface, interface_in, out|
+      payload[:server].delete(:interfaces).each do |interface, interface_in, out, total|
         @host.gauge "interface_in.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", interface_in
         @host.gauge "interface_out.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", out
+        @host.gauge "interface_total.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", total
       end
 
       payload[:server].delete(:processes).each do |k|

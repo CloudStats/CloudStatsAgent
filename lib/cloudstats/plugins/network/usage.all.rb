@@ -48,9 +48,9 @@ CloudStats::Sysinfo.plugin :network do
     if present && past
       rx = (present[0] - past[0]) / Config[:timeout]
       tx = (present[1] - past[1]) / Config[:timeout]
-      [iface, [rx, 0].max, [tx, 0].max]
+      [iface, [rx, 0].max, [tx, 0].max, [rx + tx, 0].max]
     else
-      [iface, 0, 0]
+      [iface, 0, 0, 0]
     end
   end
 
