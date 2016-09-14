@@ -16,8 +16,13 @@ module CloudStats
         result = http_client.send_report
 
         log_and_parse_result(result) if result
-      elsif statsd_client.connected?
-        statsd_client.send_report
+      elsif to == :statsd
+        if statsd_client.connected?
+          statsd_client.send_report
+        else
+          @statsd_client = StatsdClient.new
+          @statsd_client.send_report if @statsd_client.connected?
+        end
       end
       $logger.info 'Done publishing'
     end

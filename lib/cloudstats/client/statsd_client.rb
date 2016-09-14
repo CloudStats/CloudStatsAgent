@@ -9,16 +9,9 @@ module CloudStats
       statsd_host = PublicConfig['statsd_host'] || Config[:default_statsd]['statsd_host']
       statsd_port = PublicConfig['statsd_port'] || Config[:default_statsd]['statsd_port']
       @statsd_protocol = (PublicConfig['statsd_protocol'] || Config[:default_statsd]['statsd_protocol']).to_sym
-      processes_statsd_host = PublicConfig['processes_statsd_host'] || Config[:default_processes_statsd]['statsd_host']
 
       @host = Statsd.new(
         statsd_host,
-        statsd_port,
-        @statsd_protocol
-      )
-
-      @processes_host = Statsd.new(
-        processes_statsd_host,
         statsd_port,
         @statsd_protocol
       )
@@ -57,10 +50,11 @@ module CloudStats
         @host.gauge "interface_total.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", total
       end
 
-      payload[:server].delete(:processes).each do |k|
-        @processes_host.gauge "process_cpu.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:cpu]
-        @processes_host.gauge "process_mem.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:mem]
+      payload[:server][:processes].each do |k|
+        @host.gauge "process_cpu.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:cpu]
+        @host.gauge "process_mem.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:mem]
       end
+      payload[:server].delete(:processes)
 
       # payload[:server][:disks].each do |k, used, available|
       #   @host.gauge "#{k}_used.#{server_key}.#{PublicConfig['key']}", used
