@@ -17,7 +17,7 @@ module CloudStats
         mem_total:       sysinfo.safe_get(:memory, :summary, :total),
         mem_cached:      sysinfo.safe_get(:memory, :cached),
         mem_buffers:     sysinfo.safe_get(:memory, :buffers),
-        mem_used_perc:   sysinfo.safe_get(:memory, :summary, :used_perc),
+        mem_usage:       sysinfo.safe_get(:memory, :summary, :used_perc),
         running_procs:   sysinfo.safe_get(:processes, :count),
         load_one:        sysinfo.safe_get(:cpu, :load, :one_minute),
         load_five:       sysinfo.safe_get(:cpu, :load, :five_minutes),
