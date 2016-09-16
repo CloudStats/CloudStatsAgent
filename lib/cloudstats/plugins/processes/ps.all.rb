@@ -14,7 +14,7 @@ CloudStats::Sysinfo.plugin :processes do
           cpu:     pr[3],
           mem:     pr[4],
           vsize:   pr[5],
-          command: pr[6]
+          command: pr[6].gsub('.', '_')
         }
       end
   end
