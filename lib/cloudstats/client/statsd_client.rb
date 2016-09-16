@@ -52,12 +52,11 @@ module CloudStats
 
       payload[:server][:processes].each do |k|
         p k
-        @host.gauge "process_cpu.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:cpu]
-        @host.gauge "process_mem.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:mem]
-        @host.gauge "process_pid.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:pid]
-        @host.gauge "process_ppid.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:ppid]
-        @host.gauge "process_rss.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:rss]
-        @host.gauge "process_vsize.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}", k[:vsize]
+        @host.gauge "process_cpu.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:cpu]
+        @host.gauge "process_mem.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:mem]
+        @host.gauge "process_ppid.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:ppid]
+        @host.gauge "process_rss.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:rss]
+        @host.gauge "process_vsize.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:vsize]
       end
       payload[:server].delete(:processes)
 
