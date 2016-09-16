@@ -14,7 +14,7 @@ CloudStats::Sysinfo.plugin :processes do
           cpu:     pr[3],
           mem:     pr[4],
           vsize:   pr[5],
-          command: (pr[6..-1] || []).join(' ')
+          command: pr[6]
         }
       end
   end
@@ -64,7 +64,7 @@ CloudStats::Sysinfo.plugin :processes do
     {
       count: @ps.each_line.count - 1,
       ps: @ps,
-      all: psflatten(pstree)
+      all: psparse
     }
   end
 end
