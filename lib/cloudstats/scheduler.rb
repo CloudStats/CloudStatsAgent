@@ -11,6 +11,12 @@ module CloudStats
       @command_processor = CommandProcessor.new
     end
 
+    def uninstall_agent
+      $logger.info "Server not found on cloudstats. Removing agent."
+      `/etc/init.d/cloudstats-agent uninstall`
+      exit
+    end
+
     def create_scheduler
       scheduler = Rufus::Scheduler.new
       def scheduler.on_error(job, error)
@@ -31,6 +37,10 @@ module CloudStats
           unless command_processor.alive?
             $logger.info "Command Processor is dead"
             command_processor.run
+            if command_processor.auth_failures == 3
+              uninstall_agent if AgentApi.delete_server?
+              command_processor.auth_failures = 0
+            end
           end
         end
       end
@@ -48,7 +58,10 @@ module CloudStats
 
       $logger.info "Scheduling http reports every 12 hours"
       scheduler.every '12h' do
-        publisher.publish(:http)
+        res = publisher.publish(:http)
+        if res and res['error']
+          uninstall_agent if AgentApi.delete_server?
+        end
       end
 
       $logger.info "Scheduling updates every #{update_rate}"

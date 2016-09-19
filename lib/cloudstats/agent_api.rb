@@ -20,6 +20,20 @@ module CloudStats
       end
     end
 
+    def self.delete_server?
+      uri = URI("#{AgentApi.api_path}/server_id?#{AgentApi.params}")
+
+      begin
+        resp = Net::HTTP.get_response(uri)
+        resp.code == '404' || resp.code == '403'
+      rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Timeout::Error => e
+        $logger.error "Can't reach api to determine server status #{e}"
+
+        nil
+      end
+
+    end
+
     def self.grab_domain_id
       uri = URI("#{AgentApi.api_path}/domain_id?#{AgentApi.params}")
 

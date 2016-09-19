@@ -12,6 +12,7 @@ module CloudStats
 
     def publish(to = :statsd)
       $logger.info 'Publishing...'
+      result = nil
       if to == :http
         result = http_client.send_report
 
@@ -25,6 +26,7 @@ module CloudStats
         end
       end
       $logger.info 'Done publishing'
+      return result
     end
 
     private
