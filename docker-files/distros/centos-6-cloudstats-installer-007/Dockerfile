@@ -5,4 +5,6 @@ RUN echo 'repo: agent007' >> /home/cloudstats_agent/config.yml
 
 RUN echo 'centos6-cld-inst-007' > /etc/cloudstats/server.key
 
+RUN /home/cloudstats_agent/cloudstats-agent --first-time
+
 CMD '/home/cloudstats_agent/cloudstats-agent'

@@ -5,4 +5,5 @@ RUN echo 'repo: agent007' >> /home/monitoring_agent/config.yml
 
 RUN echo 'centos6-mon-inst-007' > /etc/monitoring_agent/server.key
 
+RUN /home/monitoring_agent/monitoring-agent --first-time
 CMD '/home/monitoring_agent/monitoring-agent'

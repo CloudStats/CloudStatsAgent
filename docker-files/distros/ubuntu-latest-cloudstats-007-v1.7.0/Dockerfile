@@ -10,5 +10,6 @@ RUN tar zxvf cloudstats-agent-1.7.0-linux-x86_64.tar.gz --strip-components 1 >/d
 
 COPY config.yml /home/cloudstats_agent/config.yml
 RUN echo 'repo: agent007' >> /home/cloudstats_agent/config.yml
+RUN /home/cloudstats_agent/cloudstats-agent --first-time
 
 CMD '/home/cloudstats_agent/cloudstats-agent'
