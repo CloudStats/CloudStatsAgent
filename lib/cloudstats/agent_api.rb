@@ -9,6 +9,7 @@ module CloudStats
     end
 
     def self.grab_server_id
+      $logger.info 'Grabbing server_id'
       uri = URI("#{AgentApi.api_path}/server_id?#{AgentApi.params}")
 
       begin
@@ -35,6 +36,7 @@ module CloudStats
     end
 
     def self.grab_domain_id
+      $logger.info 'Grabbing domain_id'
       uri = URI("#{AgentApi.api_path}/domain_id?#{AgentApi.params}")
 
       begin
@@ -47,6 +49,7 @@ module CloudStats
     end
 
     def self.statsd_shard
+      $logger.info 'Grabbing shard'
       uri = URI("#{AgentApi.api_path}/statsd_shard?#{AgentApi.params}")
 
       begin
