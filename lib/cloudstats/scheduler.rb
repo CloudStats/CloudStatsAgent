@@ -56,12 +56,14 @@ module CloudStats
         CloudStats::StatsdShard.store_statsd_host
       end
 
+      $logger.info "Scheduling agent remover"
+      scheduler.every '11h' do
+        uninstall_agent if AgentApi.delete_server?
+      end
+
       $logger.info "Scheduling http reports every 12 hours"
       scheduler.every '12h' do
-        res = publisher.publish(:http)
-        if res and res['error']
-          uninstall_agent if AgentApi.delete_server?
-        end
+        publisher.publish(:http)
       end
 
       $logger.info "Scheduling updates every #{update_rate}"
