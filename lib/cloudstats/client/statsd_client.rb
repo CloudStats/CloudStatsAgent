@@ -53,7 +53,6 @@ module CloudStats
       end
 
       payload[:server][:processes].each do |k|
-        p k
         @host.gauge "process_cpu.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:cpu]
         @host.gauge "process_mem.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:mem]
         @host.gauge "process_ppid.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:ppid]
@@ -62,22 +61,7 @@ module CloudStats
       end
       payload[:server].delete(:processes)
 
-      # payload[:server][:disks].each do |k, used, available|
-      #   @host.gauge "#{k}_used.#{server_key}.#{PublicConfig['key']}", used
-      #   @host.gauge "#{k}_available.#{server_key}.#{PublicConfig['key']}", available
-      # end
-      #
-      # payload[:server].delete(:disks)
-
-      # payload[:server][:interfaces].each do |k, rx, tx|
-      #   @host.gauge "#{k}_rx.#{server_key}.#{PublicConfig['key']}", rx
-      #   @host.gauge "#{k}_tx.#{server_key}.#{PublicConfig['key']}", tx
-      # end
-      #
-      # payload[:server].delete(:interfaces)
-
       payload[:server].each do |k, v|
-        # puts "#{server_key}_#{k} #{v}\n"
         @host.gauge "#{k}.#{AgentApi.server_id}.#{AgentApi.domain_id}", v
       end
     end
