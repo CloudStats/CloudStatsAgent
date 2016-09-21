@@ -6,6 +6,7 @@ module CloudStats
     attr_reader :host
 
     def initialize
+      $logger.info 'Initializing statsd client'
       statsd_host = PublicConfig['statsd_host'] || Config[:default_statsd]['statsd_host']
       statsd_port = PublicConfig['statsd_port'] || Config[:default_statsd]['statsd_port']
       @statsd_protocol = (PublicConfig['statsd_protocol'] || Config[:default_statsd]['statsd_protocol']).to_sym
@@ -25,6 +26,7 @@ module CloudStats
     end
 
     def send(payload)
+      $logger.info 'Sending the stats via statsd'
       [
         :ps, :remote_calls_enabled, :agent_version, :os, :uptime,
         :kernel, :release, :hostname, :vms, :disk_smart
