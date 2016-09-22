@@ -79,7 +79,7 @@ begin
     CloudStats::Scheduler.new.schedule
   end
 
-rescue Exception => e
+rescue StandardError, ScriptError, SecurityError => e
   if $enable_repl
     raise e
   else
