@@ -1,0 +1,30 @@
+# 007 repo
+ubuntu-latest-cloudstats-installer-007:
+  build: ubuntu-latest-cloudstats-installer-007
+
+ubuntu-14-cloudstats-installer-007:
+  build: ubuntu-14-cloudstats-installer-007
+
+ubuntu-12-cloudstats-installer-007:
+  build: ubuntu-12-cloudstats-installer-007
+
+ubuntu-latest-cloudstats-007:
+  build: ubuntu-latest-cloudstats-007
+
+ubuntu-latest-cloudstats-007-v1.7.0:
+  build: ubuntu-latest-cloudstats-007-v1.7.0
+
+centos-latest-cloudstats-installer-007:
+  build: centos-latest-cloudstats-installer-007
+
+centos-6-cloudstats-installer-007:
+  build: centos-latest-cloudstats-installer-007
+
+debian-latest-cloudstats-installer-007:
+  build: debian-latest-cloudstats-installer-007
+
+debian-wheezy-cloudstats-installer-007:
+  build: debian-wheezy-cloudstats-installer-007
+
+fedora-latest-cloudstats-installer-007:
+  build: fedora-latest-cloudstats-installer-007
