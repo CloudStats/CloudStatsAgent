@@ -67,6 +67,11 @@ CloudStats::Sysinfo.plugin :memory do
       memory = memory.map_to_hash do |k, val|
         [k, BytesConverter::convert(val).to_f]
       end
+      [:free, :cached, :buffers, :total].each do |key|
+        unless memory[key]
+          memory[key] = 0.0
+        end
+      end
       memory[:summary] = {
         free: (memory[:free] + memory[:cached] + memory[:buffers]),
         used: (memory[:total] - memory[:free] - memory[:cached] - memory[:buffers]),
