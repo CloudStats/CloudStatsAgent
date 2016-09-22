@@ -38,6 +38,11 @@ Config[:public_config_path] = "#{Config[:install_path]}/config.yml"
 
 PublicConfig = YAML.load(File.read(Config[:public_config_path])) rescue {}
 
+if PublicConfig.class != Hash
+  $logger.error 'Config file format is incorrect. Agent was probably installed incorrectly.'
+  exit
+end
+
 PublicConfig.define_singleton_method(:save_to_yml) do
   open(Config[:public_config_path], 'w') do |f|
     f.write PublicConfig.to_yaml
