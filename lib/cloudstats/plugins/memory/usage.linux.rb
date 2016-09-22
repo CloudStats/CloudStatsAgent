@@ -65,7 +65,7 @@ CloudStats::Sysinfo.plugin :memory do
       end
 
       memory = memory.map_to_hash do |k, val|
-        [k, BytesConverter::convert(val)]
+        [k, BytesConverter::convert(val).to_f]
       end
       memory[:summary] = {
         free: (memory[:free] + memory[:cached] + memory[:buffers]),
