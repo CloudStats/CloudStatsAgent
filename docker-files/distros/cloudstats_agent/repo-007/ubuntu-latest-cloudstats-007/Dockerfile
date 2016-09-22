@@ -1,6 +1,9 @@
 FROM ubuntu:latest
 
 RUN apt-get update && apt-get install vim curl -y
+RUN apt-get install tar gzip sysstat net-tools procps -y
+RUN apt-get install iproute2 -y
+RUN apt-get install iproute -y
 
 RUN mkdir /home/cloudstats_agent
 WORKDIR /home/cloudstats_agent
