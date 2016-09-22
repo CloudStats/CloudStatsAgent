@@ -39,7 +39,7 @@ Config[:public_config_path] = "#{Config[:install_path]}/config.yml"
 PublicConfig = YAML.load(File.read(Config[:public_config_path])) rescue {}
 
 if PublicConfig.class != Hash
-  $logger.error 'Config file format is incorrect. Agent was probably installed incorrectly.'
+  $logger.error 'Config file format is incorrect. Please reinstall the agent or contact support.'
   exit
 end
 
