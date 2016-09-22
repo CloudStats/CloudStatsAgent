@@ -36,23 +36,23 @@ module CloudStats
 
       @host.gauge "statsd_protocol.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{@statsd_protocol.to_s}", @statsd_protocol == :udp ? 0 : 1
 
-      payload[:server].delete(:services).each do |service, status|
+      (payload[:server].delete(:services) || []).each do |service, status|
         @host.gauge "services.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{service}", (status ? 1 : 0)
       end
 
-      payload[:server].delete(:disks).each do |disk, used, available, perc|
+      (payload[:server].delete(:disks) || []).each do |disk, used, available, perc|
         @host.gauge "partition_used.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{disk}", used
         @host.gauge "partition_free.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{disk}", available
         @host.gauge "partition_perc.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{disk}", perc
       end
 
-      payload[:server].delete(:interfaces).each do |interface, interface_in, out, total|
+      (payload[:server].delete(:interfaces) || []).each do |interface, interface_in, out, total|
         @host.gauge "interface_in.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", interface_in
         @host.gauge "interface_out.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", out
         @host.gauge "interface_total.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", total
       end
 
-      payload[:server][:processes].each do |k|
+      (payload[:server][:processes] || []).each do |k|
         @host.gauge "process_cpu.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:cpu]
         @host.gauge "process_mem.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:mem]
         @host.gauge "process_ppid.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:ppid]
