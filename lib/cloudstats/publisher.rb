@@ -3,20 +3,30 @@ require 'openssl'
 module CloudStats
   # Entry point for publishing reports to server
   class Publisher
-    attr_reader :client
+    attr_reader :statsd_client, :http_client
 
     def initialize
-      @client = HTTPReportClient.new(url)
+      @http_client = HTTPReportClient.new(url)
       @statsd_client = StatsdClient.new
     end
 
-    def publish
+    def publish(to = :statsd)
       $logger.info 'Publishing...'
-      result = client.send_report
-      @statsd_client.send_report if @statsd_client.connected?
+      result = nil
+      if to == :http
+        result = http_client.send_report
 
-      log_and_parse_result(result) if result
+        log_and_parse_result(result) if result
+      elsif to == :statsd
+        if statsd_client.connected?
+          statsd_client.send_report
+        else
+          @statsd_client = StatsdClient.new
+          @statsd_client.send_report if @statsd_client.connected?
+        end
+      end
       $logger.info 'Done publishing'
+      return result
     end
 
     private

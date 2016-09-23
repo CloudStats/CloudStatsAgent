@@ -1,0 +1,5 @@
+ubuntu-latest-cloudstats-installer:
+  build: ubuntu-latest-cloudstats-installer
+
+centos-latest-cloudstats-installer:
+  build: centos-latest-cloudstats-installer

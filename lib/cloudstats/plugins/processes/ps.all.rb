@@ -3,7 +3,7 @@ CloudStats::Sysinfo.plugin :processes do
     bash zsh fish sh ksh tmux screen sudo).map { |x| [x, "-#{x}"] }.flatten
 
   def psparse
-    `ps -eo pid,ppid,rss,pcpu,pmem,command`
+    `ps axco pid,ppid,rss,pcpu,pmem,vsize,command`
       .split("\n")[1..-1]
       .map(&:split)
       .map do |pr|
@@ -13,7 +13,8 @@ CloudStats::Sysinfo.plugin :processes do
           rss:     pr[2],
           cpu:     pr[3],
           mem:     pr[4],
-          command: (pr[5..-1] || []).join(' ')
+          vsize:   pr[5],
+          command: pr[6].gsub('.', '_')
         }
       end
   end
@@ -59,11 +60,11 @@ CloudStats::Sysinfo.plugin :processes do
   end
 
   run do
-    @ps = `ps -eo user,pid,ppid,rss,vsize,pcpu,pmem,command`
+    @ps = `ps axco user,pid,ppid,rss,vsize,pcpu,pmem,command`
     {
       count: @ps.each_line.count - 1,
       ps: @ps,
-      all: psflatten(pstree)
+      all: psparse
     }
   end
 end

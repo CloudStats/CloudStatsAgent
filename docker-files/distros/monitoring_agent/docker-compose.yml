@@ -1,0 +1,22 @@
+# ============== Monitoring agent
+ubuntu-latest-monitoring-agent-installer:
+  build: ubuntu-latest-monitoring-agent-installer
+
+centos-latest-monitoring-agent-installer:
+  build: centos-latest-monitoring-agent-installer
+
+# 007 repo
+ubuntu-latest-monitoring-agent-installer-007:
+  build: ubuntu-latest-monitoring-agent-installer-007
+
+centos-latest-monitoring-agent-installer-007:
+  build: centos-latest-monitoring-agent-installer-007
+
+centos-6-monitoring-agent-installer-007:
+  build: centos-6-monitoring-agent-installer-007
+
+debian-latest-monitoring-agent-installer-007:
+  build: debian-latest-monitoring-agent-installer-007
+
+debian-wheezy-monitoring-agent-installer-007:
+  build: debian-wheezy-monitoring-agent-installer-007

@@ -59,7 +59,11 @@ begin
     CloudStats::Backup.instance.perform
 
   when '--first-time'
-    CloudStats::Publisher.new.publish
+    publisher = CloudStats::Publisher.new
+    publisher.publish(:http)
+    publisher.publish(:statsd)
+
+    CloudStats::StatsdShard.store_statsd_host
 
   when '--command-processor'
     CloudStats::CommandProcessor.new(block: true).run
@@ -75,7 +79,7 @@ begin
     CloudStats::Scheduler.new.schedule
   end
 
-rescue Exception => e
+rescue StandardError, ScriptError, SecurityError => e
   if $enable_repl
     raise e
   else

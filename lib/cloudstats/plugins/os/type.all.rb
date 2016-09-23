@@ -1,17 +1,21 @@
 CloudStats::Sysinfo.plugin :os do
-  def format(distro, version)
+  def format(distro, version, uptime_in_seconds)
     {
       type:    `uname`.strip,
       uptime:  `uptime`.strip,
+      uptime_seconds: uptime_in_seconds,
       name:    distro,
       version: version,
-      kernel:  `uname -r`.strip
+      kernel:  `uname -r`.strip,
+      users:   `users | wc -w`.strip
     }
   end
 
   os :osx do
     run do
-      format('Mac OS X', `sw_vers -productVersion`.strip)
+      uptime_in_seconds = (Time.now - Time.at(`sysctl -n kern.boottime`.scan( /\d+/ ).first.to_i)).to_i
+
+      format('Mac OS X', `sw_vers -productVersion`.strip, uptime_in_seconds)
     end
   end
 
@@ -32,7 +36,7 @@ CloudStats::Sysinfo.plugin :os do
       version = grep_param('/etc/lsb-release', 'DISTRIB_RELEASE')
       distro  = grep_param('/etc/os-release',  'NAME')    if distro.nil?
       version = grep_param('/etc/os-release',  'VERSION') if version.nil?
-
+      uptime_in_seconds = `cat /proc/uptime`.split(' ').first
       if distro.nil?
         if File.exists? '/etc/debian_version'
           distro = 'debian'
@@ -65,7 +69,7 @@ CloudStats::Sysinfo.plugin :os do
       distro = distro.capitalize.strip
       version = version.strip
 
-      format(distro, version)
+      format(distro, version, uptime_in_seconds)
     end
   end
 end

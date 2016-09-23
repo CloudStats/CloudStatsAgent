@@ -5,9 +5,16 @@ module CloudStats
     attr_reader :publisher, :scheduler, :command_processor
 
     def initialize
+      CloudStats::StatsdShard.store_statsd_host
       @publisher = Publisher.new
       @scheduler = create_scheduler
       @command_processor = CommandProcessor.new
+    end
+
+    def uninstall_agent
+      $logger.info "Server not found on cloudstats. Removing agent."
+      `/etc/init.d/cloudstats-agent uninstall`
+      exit
     end
 
     def create_scheduler
@@ -30,13 +37,33 @@ module CloudStats
           unless command_processor.alive?
             $logger.info "Command Processor is dead"
             command_processor.run
+            if command_processor.auth_failures == 3
+              uninstall_agent if AgentApi.delete_server?
+              command_processor.auth_failures = 0
+            end
           end
         end
       end
 
       $logger.info "Scheduling reports every 1m"
       scheduler.every '1m' do
-        publisher.publish
+        publisher.publish(:statsd)
+        publisher.publish(:http)
+      end
+
+      $logger.info 'Scheduling shard check every 6 hours'
+      scheduler.every '6h' do
+        CloudStats::StatsdShard.store_statsd_host
+      end
+
+      $logger.info "Scheduling agent remover"
+      scheduler.every '11h' do
+        uninstall_agent if AgentApi.delete_server?
+      end
+
+      $logger.info "Scheduling http reports every 12 hours"
+      scheduler.every '12h' do
+        publisher.publish(:http)
       end
 
       $logger.info "Scheduling updates every #{update_rate}"

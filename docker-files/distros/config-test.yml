@@ -1,0 +1,7 @@
+---
+key: cmBS5j5hvkrc-0mv2uLVtol8kdhAzw4uAVSy9QrbSRUBCKtRyK5-jzfisrDUfntmQpgkNupCQPu5GIG23be1FXw
+verify_ssl: true
+enable_remote_calls: false
+statsd_protocol: udp
+statsd_host: data1.cloudstats.me
+statsd_port: 8125
