@@ -5,3 +5,4 @@ Raven.configure do |config|
 end
 
 Raven.tags_context version: CloudStats::VERSION, agent_environment: CloudStats::ENVIRONMENT
+Raven.extra_context PublicConfig: PublicConfig, Config: Config
