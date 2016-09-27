@@ -49,7 +49,7 @@ module CloudStats
       h
     rescue => error
       $logger.warn "Failed to fetch :#{key} (#{error.message})"
-      Airbrake.catch(error, key: key)
+      Raven.capture_exception(error)
       {}
     end
   end

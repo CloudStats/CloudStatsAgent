@@ -21,7 +21,7 @@ module CloudStats
       scheduler = Rufus::Scheduler.new
       def scheduler.on_error(job, error)
         $logger.error "#{error.class.name}: #{error.message}"
-        Airbrake.catch(error, job_id: job.id)
+        Raven.capture_exception(error)
       end
       scheduler
     end
