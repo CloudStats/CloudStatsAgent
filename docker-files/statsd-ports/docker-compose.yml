@@ -4,8 +4,8 @@ default-port:
 tcp-port-80:
   build: tcp-port-80
 
-tcp-port-8127:
-  build: tcp-port-8127
+tcp-port-no-host:
+  build: tcp-port-no-host
 
 udp-port:
   build: udp-port
