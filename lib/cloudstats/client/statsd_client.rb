@@ -18,7 +18,7 @@ module CloudStats
       )
 
     rescue SocketError, SystemCallError, Timeout::Error => e
-      $logger.error "Cannot send data to statsd #{statsd_host}:#{statsd_port}. Exception => #{e}\nPlease check if you firewall is blocking the connection."
+      $logger.error "Cannot send data to statsd #{@statsd_protocol}://#{@statsd_host}:#{@statsd_port}. Exception => #{e}\nPlease check if you firewall is blocking the connection."
     end
 
     def connected?
