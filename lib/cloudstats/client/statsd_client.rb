@@ -17,12 +17,14 @@ module CloudStats
         @statsd_protocol
       )
 
+      @connected = true
     rescue SocketError, SystemCallError, Timeout::Error => e
+      @connected = false
       $logger.error "Cannot send data to statsd #{@statsd_protocol}://#{@statsd_host}:#{@statsd_port}. Exception => #{e}\nPlease check if you firewall is blocking the connection."
     end
 
     def connected?
-      !@host.nil?
+      !@host.nil? && @connected
     end
 
     def send(payload)
@@ -61,11 +63,14 @@ module CloudStats
       end
       payload[:server].delete(:processes)
 
-      payload[:server].each do |k, v|
+      results = payload[:server].collect do |k, v|
         @host.gauge "#{k}.#{AgentApi.server_id}.#{AgentApi.domain_id}", v
       end
+
+      @connected = false if results.compact.empty?
+
+      $logger.info "Statsd report sent"
+      { ok: true }
     end
-    $logger.info "Statsd report sent"
-    { ok: true }
   end
 end
