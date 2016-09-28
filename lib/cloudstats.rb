@@ -12,7 +12,6 @@ require_relative './cloudstats/reloader'
 CloudStats::Reloader.watch do
   require_relative 'initializers/debug'
   require_relative 'initializers/logger'
-  require_relative 'initializers/airbrake'
 end
 $logger = CloudStats::Logger.new
 
@@ -25,6 +24,7 @@ begin
     require_dir './client'
     require_dir './server'
     require_tree './plugins'
+    require_relative 'initializers/raven'
   end
 
   $logger.info ''
@@ -84,6 +84,6 @@ rescue StandardError, ScriptError, SecurityError => e
     raise e
   else
     $logger.fatal "#{e.class.name}: #{e.message}"
-    Airbrake.catch(e)
+    Raven.capture_exception e
   end
 end
