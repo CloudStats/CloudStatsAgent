@@ -54,6 +54,8 @@ module CloudStats
       $logger.info 'Scheduling shard check every 6 hours'
       scheduler.every '6h' do
         CloudStats::StatsdShard.store_statsd_host
+
+        @publisher = Publisher.new
       end
 
       $logger.info "Scheduling agent remover"
