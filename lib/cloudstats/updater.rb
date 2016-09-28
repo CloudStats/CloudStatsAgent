@@ -36,18 +36,13 @@ module CloudStats
       update_init_script unless PublicConfig['disable_init_script_update']
       remove_archive(current_package_name)
 
-      Reloader.reload
-      $logger.info "Reloader updated config to version #{CloudStats::VERSION}."
-
       case @update_type
       when :restart
         $logger.info 'Restarting via :restart'
         exec "/etc/init.d/cloudstats-agent", "restart"
-      when :keepalive
+      else
         $logger.info 'Restarting via :keepalive'
         exit # keepalive will start agent back
-      else
-        $logger.info 'Restarted via :reload'
       end
       true
     end
