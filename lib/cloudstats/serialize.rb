@@ -1,6 +1,6 @@
 module CloudStats
   def self.serialize(server_key, sysinfo)
-    {
+    res = {
       version: CloudStats::VERSION,
       server_key: server_key,
       server: {
@@ -45,5 +45,14 @@ module CloudStats
         disk_smart:      sysinfo.safe_get(:disk, :smart)
       }
     }
+
+    res[:server].keys.each do |key|
+      if res[:server][key].class == Float and res[:server][key].nan?
+        res[:server][key] = nil
+        Raven.capture_message("Found NaN in #{key} in serialize")
+      end
+    end
+
+    return res
   end
 end
