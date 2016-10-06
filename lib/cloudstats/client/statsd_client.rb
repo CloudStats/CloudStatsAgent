@@ -6,28 +6,20 @@ module CloudStats
     attr_reader :host
 
     def initialize
-      $logger.info 'Initializing statsd client'
+      $logger.info 'Initializing statsd client settings'
       @statsd_host = PublicConfig['statsd_host'] || Config[:default_statsd]['statsd_host']
       @statsd_port = PublicConfig['statsd_port'] || Config[:default_statsd]['statsd_port']
       @statsd_protocol = (PublicConfig['statsd_protocol'] || Config[:default_statsd]['statsd_protocol']).to_sym
+    end
 
+    def send(payload)
+      $logger.info "Initializing statsd connection"
       @host = Statsd.new(
         @statsd_host,
         @statsd_port,
         @statsd_protocol
       )
 
-      @connected = true
-    rescue SocketError, SystemCallError, Timeout::Error => e
-      @connected = false
-      $logger.error "Cannot send data to statsd #{@statsd_protocol}://#{@statsd_host}:#{@statsd_port}. Exception => #{e}\nPlease check if you firewall is blocking the connection."
-    end
-
-    def connected?
-      !@host.nil? && @connected
-    end
-
-    def send(payload)
       $logger.info "Sending the stats via statsd #{@statsd_protocol}://#{@statsd_host}:#{@statsd_port}"
       [
         :ps, :remote_calls_enabled, :agent_version, :os, :uptime,
@@ -67,10 +59,14 @@ module CloudStats
         @host.gauge "#{k}.#{AgentApi.server_id}.#{AgentApi.domain_id}", v
       end
 
-      @connected = false if results.compact.empty?
-
       $logger.info "Statsd report sent"
+
+      @host.close
+
       { ok: true }
+    rescue SocketError, SystemCallError, Timeout::Error => e
+      @connected = false
+      $logger.error "Cannot send data to statsd #{@statsd_protocol}://#{@statsd_host}:#{@statsd_port}. Exception => #{e}\nPlease check if you firewall is blocking the connection."
     end
   end
 end
