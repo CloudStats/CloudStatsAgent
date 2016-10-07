@@ -11,7 +11,7 @@ module CloudStats
         disk_used:       sysinfo.safe_get(:disk, :used),
         disk_size:       sysinfo.safe_get(:disk, :total),
         disk_usage:      sysinfo.safe_get(:disk, :used_perc),
-        disk_used_free:  sysinfo.safe_get(:disk, :used_free),
+        disk_free_perc:  sysinfo.safe_get(:disk, :free_perc),
         mem_used:        sysinfo.safe_get(:memory, :summary, :used),
         mem_free:        sysinfo.safe_get(:memory, :summary, :free),
         mem_total:       sysinfo.safe_get(:memory, :summary, :total),
