@@ -4,6 +4,7 @@ CloudStats::Sysinfo.plugin :processes do
 
   def psparse
     `ps axo pid,ppid,rss,pcpu,pmem,vsize,command`
+      .force_encoding('utf-8')
       .split("\n")[1..-1]
       .map(&:split)
       .map do |pr|
