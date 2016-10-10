@@ -70,7 +70,7 @@ GIT
 
 GIT
   remote: git://github.com/otzy007/statsd.git
-  revision: 67f84f945ce86e04f0fb7ed68d71d5020b9ca7c0
+  revision: 5610a36f84a706ae2b81d0bf6ac9d1ac75ef5689
   specs:
     statsd-ruby (1.3.0)
 
@@ -82,12 +82,12 @@ GEM
     amq-protocol (2.0.1)
     atomic (1.1.14)
     atomic (1.1.14-java)
-    aws-sdk (2.6.2)
-      aws-sdk-resources (= 2.6.2)
-    aws-sdk-core (2.6.2)
+    aws-sdk (2.6.6)
+      aws-sdk-resources (= 2.6.6)
+    aws-sdk-core (2.6.6)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.6.2)
-      aws-sdk-core (= 2.6.2)
+    aws-sdk-resources (2.6.6)
+      aws-sdk-core (= 2.6.6)
     aws-ses (0.5.0)
       builder
       mail (> 2.2.5)
@@ -250,7 +250,7 @@ GEM
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
       rspec-mocks (~> 3.5.0)
-    rspec-core (3.5.3)
+    rspec-core (3.5.4)
       rspec-support (~> 3.5.0)
     rspec-expectations (3.5.0)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -261,7 +261,7 @@ GEM
     rspec-support (3.5.0)
     rufus-scheduler (3.2.2)
     safe_yaml (1.0.4)
-    sentry-raven (2.0.1)
+    sentry-raven (2.0.2)
       faraday (>= 0.7.6, < 0.10.x)
     simple_oauth (0.2.0)
     systemu (2.6.5)
