@@ -50,7 +50,11 @@ module CloudStats
         @host.gauge "interface_total.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", total
       end
 
-      (payload[:server][:processes] || [])[0..9].each do |k|
+      processes = payload[:server][:processes] || []
+      top_cpu_processes = processes.sort { |e| e[:cpu].to_f }.reverse[0..9]
+      top_mem_processes = processes.sort { |e| e[:mem].to_f }.reverse[0..9]
+
+      (top_cpu_processes + top_mem_processes).each do |k|
         @host.gauge "process_cpu.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:cpu]
         @host.gauge "process_mem.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:mem]
         @host.gauge "process_ppid.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:ppid]
