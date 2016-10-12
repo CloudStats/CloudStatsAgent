@@ -19,7 +19,7 @@ module ServicesHelper
 
     result = {}
     result[@service_name] = false
-    psax = `ps ax`.each_line
+    psax = `ps ax`.force_encoding('utf-8').each_line
     @required_processes.each do |process|
       result[@service_name] |= psax.grep(process).count > 0
     end
