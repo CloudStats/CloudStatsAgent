@@ -6,8 +6,6 @@ module CloudStats
     attr_reader :host
 
     def initialize
-      Statsd.logger = $logger
-
       $logger.info 'Initializing statsd client settings'
       @statsd_host = PublicConfig['statsd_host'] || Config[:default_statsd]['statsd_host']
       @statsd_port = PublicConfig['statsd_port'] || Config[:default_statsd]['statsd_port']
@@ -21,8 +19,6 @@ module CloudStats
         @statsd_port,
         @statsd_protocol
       )
-
-      sleep 2
 
       $logger.info "Sending the stats via statsd #{@statsd_protocol}://#{@statsd_host}:#{@statsd_port}"
       [
