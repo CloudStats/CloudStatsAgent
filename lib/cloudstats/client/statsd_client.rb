@@ -6,8 +6,6 @@ module CloudStats
     attr_reader :host
 
     def initialize
-      Statsd.logger = $logger
-
       $logger.info 'Initializing statsd client settings'
       @statsd_host = PublicConfig['statsd_host'] || Config[:default_statsd]['statsd_host']
       @statsd_port = PublicConfig['statsd_port'] || Config[:default_statsd]['statsd_port']
@@ -21,8 +19,6 @@ module CloudStats
         @statsd_port,
         @statsd_protocol
       )
-
-      sleep 2
 
       $logger.info "Sending the stats via statsd #{@statsd_protocol}://#{@statsd_host}:#{@statsd_port}"
       [
@@ -50,7 +46,11 @@ module CloudStats
         @host.gauge "interface_total.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{interface}", total
       end
 
-      (payload[:server][:processes] || [])[0..9].each do |k|
+      processes = payload[:server][:processes] || []
+      top_cpu_processes = processes.sort { |e| e[:cpu].to_f }.reverse[0..9]
+      top_mem_processes = processes.sort { |e| e[:mem].to_f }.reverse[0..9]
+
+      (top_cpu_processes + top_mem_processes).each do |k|
         @host.gauge "process_cpu.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:cpu]
         @host.gauge "process_mem.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:mem]
         @host.gauge "process_ppid.#{AgentApi.server_id}.#{AgentApi.domain_id}.#{k[:command]}.#{k[:pid]}", k[:ppid]
