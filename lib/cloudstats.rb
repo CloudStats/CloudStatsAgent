@@ -61,7 +61,7 @@ begin
   when '--first-time'
     publisher = CloudStats::Publisher.new
     publisher.publish(:http)
-    publisher.publish(:statsd)
+    # publisher.publish(:statsd)
 
     CloudStats::StatsdShard.store_statsd_host
 
