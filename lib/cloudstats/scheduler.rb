@@ -51,22 +51,22 @@ module CloudStats
         publisher.publish(:http)
       end
 
-      $logger.info 'Scheduling shard check every 6 hours'
-      scheduler.every '6h' do
-        CloudStats::StatsdShard.store_statsd_host
+      # $logger.info 'Scheduling shard check every 6 hours'
+      # scheduler.every '6h' do
+      #   CloudStats::StatsdShard.store_statsd_host
+      #
+      #   @publisher = Publisher.new
+      # end
 
-        @publisher = Publisher.new
-      end
-
-      $logger.info "Scheduling agent remover"
-      scheduler.every '11h' do
-        uninstall_agent if AgentApi.delete_server?
-      end
-
-      $logger.info "Scheduling http reports every 12 hours"
-      scheduler.every '12h' do
-        publisher.publish(:http)
-      end
+      # $logger.info "Scheduling agent remover"
+      # scheduler.every '11h' do
+      #   uninstall_agent if AgentApi.delete_server?
+      # end
+      #
+      # $logger.info "Scheduling http reports every 12 hours"
+      # scheduler.every '12h' do
+      #   publisher.publish(:http)
+      # end
 
       $logger.info "Scheduling updates every #{update_rate}"
       scheduler.every update_rate do
@@ -80,18 +80,18 @@ module CloudStats
         CloudStats::Backup.instance.perform
       end
 
-      scheduler.in '5m' do
-        $logger.info 'Checking statsd_server'
-        new_config = AgentApi.statsd_server
-
-        if new_config['statsd_protocol'] == 'tcp'
-          $logger.info 'Updating the statsd server'
-          PublicConfig.merge!(new_config)
-          PublicConfig.save_to_yml
-
-          exit
-        end
-      end
+      # scheduler.in '5m' do
+      #   $logger.info 'Checking statsd_server'
+      #   new_config = AgentApi.statsd_server
+      #
+      #   if new_config['statsd_protocol'] == 'tcp'
+      #     $logger.info 'Updating the statsd server'
+      #     PublicConfig.merge!(new_config)
+      #     PublicConfig.save_to_yml
+      #
+      #     exit
+      #   end
+      # end
 
       scheduler.join
     end
