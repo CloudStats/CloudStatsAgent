@@ -38,7 +38,7 @@ module CloudStats
         release:         "#{sysinfo.safe_get(:os, :name)} #{sysinfo.safe_get(:os, :version)}",
         pending_updates: sysinfo.safe_get(:os, :pending_updates),
         hostname:        sysinfo.safe_get(:network, :hostname),
-        processes:       sysinfo.safe_get(:processes, :all),
+        top_processes:   sysinfo.safe_get(:processes, :top),
         disks:           sysinfo.safe_get(:disk, :all),
         interfaces:      sysinfo.safe_get(:network, :all),
         vms:             sysinfo.safe_get(:openvz),
