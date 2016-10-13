@@ -17,7 +17,7 @@ CloudStats::Sysinfo.plugin :processes do
           vsize:   pr[5],
           command: pr[6].gsub('.', '_').split(' ').first
         }
-      end
+      end.delete_if { |h| h[:ppid] == '2' }
   end
 
   def pstree
