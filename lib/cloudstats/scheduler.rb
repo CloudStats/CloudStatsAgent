@@ -47,7 +47,7 @@ module CloudStats
 
       $logger.info "Scheduling reports every 1m"
       scheduler.every '1m' do
-        publisher.publish(:statsd)
+        # publisher.publish(:statsd)
         publisher.publish(:http)
       end
 

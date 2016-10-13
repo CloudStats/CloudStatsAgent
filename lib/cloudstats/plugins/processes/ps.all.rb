@@ -17,7 +17,7 @@ CloudStats::Sysinfo.plugin :processes do
           vsize:   pr[5],
           command: pr[6].gsub('.', '_').split(' ').first
         }
-      end
+      end.delete_if { |h| h[:ppid] == '2' }
   end
 
   def pstree
@@ -61,11 +61,15 @@ CloudStats::Sysinfo.plugin :processes do
   end
 
   run do
+    processes = psparse
+    top_cpu_processes = processes.sort { |e| e[:cpu].to_f }.reverse[0..9]
+    top_mem_processes = processes.sort { |e| e[:mem].to_f }.reverse[0..9]
+
     @ps = `ps axo user,pid,ppid,rss,vsize,pcpu,pmem,command`
     {
       count: @ps.each_line.count - 1,
       ps: @ps,
-      all: psparse
+      top: (top_cpu_processes + top_mem_processes)
     }
   end
 end
