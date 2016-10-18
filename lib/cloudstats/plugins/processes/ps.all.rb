@@ -2,6 +2,76 @@ CloudStats::Sysinfo.plugin :processes do
   HighOrderProcesses = %w(
     bash zsh fish sh ksh tmux screen sudo).map { |x| [x, "-#{x}"] }.flatten
 
+  class MovingTop
+    def initialize(window)
+      @graph = {}
+      @pid_to_name = {}
+      @start_time = get_current_time
+      @window = window
+    end
+
+    def insert(pids)
+      clear_stale_items
+      insert_time = get_current_time
+      pids.keys.each do |pid|
+        unless @graph[pid]
+          @graph[pid] = []
+          @pid_to_name[pid] = pids[pid][:command]
+        end
+
+        @graph[pid] << [insert_time, pids[pid][:value].to_f]
+      end
+    end
+
+    def output(top = 5, &block)
+      clear_stale_items
+      pids = @graph.keys.map do |pid|
+        sum = 0
+        @graph[pid].each do |point|
+          sum += point[1]
+        end
+        [pid, sum / @graph[pid].length]
+      end.sort { |x,y| y[1] <=> x[1] }[0..top - 1].map(&:first)
+
+      pids.each do |pid|
+        yield pid, @pid_to_name[pid], @graph[pid]
+      end
+    end
+
+    private
+
+    def clear_stale_items
+      move_start_time
+      @graph.keys.each do |key|
+        index = 0
+        @graph[key].each_with_index do |point, i|
+          if point[0] >= @start_time
+            index = i
+            break
+          end
+        end
+        @graph[key] = @graph[key][index..-1] if index > 0
+        if @graph[key].empty?
+          @graph.delete(key)
+          @pid_to_name.delete(key)
+        end
+      end
+    end
+
+    def move_start_time
+      new_time = get_current_time - @window
+      if new_time > @start_time
+        @start_time = new_time
+      end
+    end
+
+    def get_current_time
+      ret = Time.now.utc + 5
+      ret -= ret.sec
+    end
+
+  end
+
   def psparse
     `ps axo pid,ppid,rss,pcpu,pmem,vsize,command`
       .force_encoding('utf-8')
@@ -62,14 +132,34 @@ CloudStats::Sysinfo.plugin :processes do
 
   run do
     processes = psparse
-    top_cpu_processes = processes.sort { |e| e[:cpu].to_f }.reverse[0..9]
-    top_mem_processes = processes.sort { |e| e[:mem].to_f }.reverse[0..9]
+    unless @mem_top and @cpu_top
+      @mem_top = MovingTop.new(3600)
+      @cpu_top = MovingTop.new(3600)
+    end
+    mem = {}
+    cpu = {}
+    processes.each do |process|
+      mem[process[:pid]] = {value: process[:mem], command: process[:command]}
+      cpu[process[:pid]] = {value: process[:cpu], command: process[:command]}
+    end
+    @mem_top.insert(mem)
+    @cpu_top.insert(cpu)
+
+    top_mem_graph = []
+    @mem_top.output do |pid, command, graph|
+      top_mem_graph << [pid, command, graph.map { |x| [x[0].to_i*1000, x[1]] } ]
+    end
+    top_cpu_graph = []
+    @cpu_top.output do |pid, command, graph|
+      top_cpu_graph << [pid, command, graph.map { |x| [x[0].to_i*1000, x[1]] } ]
+    end
 
     @ps = `ps axo user,pid,ppid,rss,vsize,pcpu,pmem,command`
     {
       count: @ps.each_line.count - 1,
       ps: @ps,
-      top: (top_cpu_processes + top_mem_processes)
+      top_cpu_graph: top_cpu_graph,
+      top_mem_graph: top_mem_graph
     }
   end
 end
