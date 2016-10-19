@@ -3,9 +3,11 @@ CloudStats::Sysinfo.plugin :processes do
     bash zsh fish sh ksh tmux screen sudo).map { |x| [x, "-#{x}"] }.flatten
 
   class MovingTop
+    KEEP_PROCESSES = 200
+    SEPARATOR = "\x00"
+
     def initialize(window)
       @graph = {}
-      @pid_to_name = {}
       @start_time = get_current_time
       @window = window
     end
@@ -14,31 +16,36 @@ CloudStats::Sysinfo.plugin :processes do
       clear_stale_items
       insert_time = get_current_time
       pids.keys.each do |pid|
-        unless @graph[pid]
-          @graph[pid] = []
-          @pid_to_name[pid] = pids[pid][:command]
+        key = pid.to_s + SEPARATOR + pids[pid][:command]
+        unless @graph[key]
+          @graph[key] = []
         end
 
-        @graph[pid] << [insert_time, pids[pid][:value].to_f]
+        @graph[key] << [insert_time, pids[pid][:value].to_f]
       end
     end
 
     def output(top = 5, &block)
       clear_stale_items
-      pids = @graph.keys.map do |pid|
+      pids = get_top(top)
+
+      pids.each do |key|
+        pid, command = key.split(SEPARATOR)
+        yield pid, command, @graph[key]
+      end
+    end
+
+    private
+
+    def get_top(top)
+      @graph.keys.map do |pid|
         sum = 0
         @graph[pid].each do |point|
           sum += point[1]
         end
         [pid, sum / @graph[pid].length]
       end.sort { |x,y| y[1] <=> x[1] }[0..top - 1].map(&:first)
-
-      pids.each do |pid|
-        yield pid, @pid_to_name[pid], @graph[pid]
-      end
     end
-
-    private
 
     def clear_stale_items
       move_start_time
@@ -53,7 +60,12 @@ CloudStats::Sysinfo.plugin :processes do
         @graph[key] = @graph[key][index..-1] if index > 0
         if @graph[key].empty?
           @graph.delete(key)
-          @pid_to_name.delete(key)
+        end
+      end
+
+      if @graph.keys.length > KEEP_PROCESSES
+        (@graph.keys - get_top(KEEP_PROCESSES)).each do |pid|
+          @graph.delete(pid)
         end
       end
     end
@@ -87,7 +99,7 @@ CloudStats::Sysinfo.plugin :processes do
           vsize:   pr[5],
           command: pr[6].gsub('.', '_').split(' ').first
         }
-      end.delete_if { |h| h[:ppid] == '2' }
+      end.delete_if { |h| h[:ppid] == '2' || h[:pid] == '2' }
   end
 
   def pstree
