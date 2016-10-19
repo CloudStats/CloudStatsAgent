@@ -50,16 +50,19 @@ CloudStats::Sysinfo.plugin :processes do
     def clear_stale_items
       move_start_time
       @graph.keys.each do |key|
-        index = 0
+        index = nil
         @graph[key].each_with_index do |point, i|
           if point[0] >= @start_time
             index = i
             break
           end
         end
-        @graph[key] = @graph[key][index..-1] if index > 0
-        if @graph[key].empty?
-          @graph.delete(key)
+        if index and index > 0
+          @graph[key] = @graph[key][index..-1]
+        elsif not index
+          if @graph[key].empty?
+            @graph.delete(key)
+          end
         end
       end
 
