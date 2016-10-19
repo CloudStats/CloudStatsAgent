@@ -39,6 +39,12 @@ begin
   case ARGV[0]
 
   when '--setup'
+    PublicConfig['key'] = ARGV[1]
+    domain_id = CloudStats::AgentApi.grab_domain_id
+    if domain_id.nil?
+      $logger.error "API Key was not provided. Please copy install command from the website or contact support."
+      exit
+    end
     $logger.info "Setting up #{ARGV[1]} domain key"
     y = YAML.load('verify_ssl: true')
 
