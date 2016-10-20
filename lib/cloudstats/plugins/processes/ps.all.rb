@@ -60,9 +60,7 @@ CloudStats::Sysinfo.plugin :processes do
         if index and index > 0
           @graph[key] = @graph[key][index..-1]
         elsif not index
-          if @graph[key].empty?
-            @graph.delete(key)
-          end
+          @graph.delete(key)
         end
       end
 
