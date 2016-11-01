@@ -7,6 +7,7 @@ module CloudStats
         remote_calls_enabled: !!PublicConfig['enable_remote_calls'],
         agent_version:   CloudStats::VERSION,
         services:        sysinfo.safe_get(:services),
+        cpu_model_name:  sysinfo.safe_get(:cpu, :model_name),
         cpu_usage:       sysinfo.safe_get(:cpu, :usage),
         disk_used:       sysinfo.safe_get(:disk, :used),
         disk_size:       sysinfo.safe_get(:disk, :total),
