@@ -97,7 +97,7 @@ CloudStats::Sysinfo.plugin :processes do
           rss:     pr[2],
           cpu:     pr[3],
           mem:     pr[4],
-          vsize:   pr[5],
+          vsz:     pr[5],
           command: pr[6].gsub('.', '_').split(' ').first
         }
       end.delete_if { |h| h[:ppid] == '2' || h[:pid] == '2' }
@@ -167,10 +167,9 @@ CloudStats::Sysinfo.plugin :processes do
       top_cpu_graph << [pid, command, graph.map { |x| [x[0].to_i*1000, x[1]] } ]
     end
 
-    @ps = `ps axo user,pid,ppid,rss,vsize,pcpu,pmem,command`
     {
-      count: @ps.each_line.count - 1,
-      ps: @ps,
+      count: processes.length,
+      ps: processes.to_json,
       top_cpu_graph: top_cpu_graph,
       top_mem_graph: top_mem_graph
     }
