@@ -1,25 +1,17 @@
 CloudStats::Sysinfo.plugin :network do
   os :linux do
     def fetch
-      lines = `ip -s link`.each_line.map(&:downcase)
-      ifaces = lines.map(&:split)
-      rxlines = ifaces.each_with_index.select { |x, _i| x[0] =~ /^rx/ }.map { |_x, i| i + 1 }
-      txlines = ifaces.each_with_index.select { |x, _i| x[0] =~ /^tx/ }.map { |_x, i| i + 1 }
+      file = open("/proc/net/dev", "r").read
+      lines = file.split("\n").drop(2).map { |x| x.gsub(/\s+/, ' ').strip }
 
-      skip_ifaces = %w(loopback)
+      skip_ifaces = %w(lo)
 
-      lines
-        .map { |x| /^\d+[:]\s*([^\s]+)[:]\s*[<](.*)[>]/.match(x) }
-        .reject(&:nil?)
-        .zip(rxlines, txlines)
-        .reject do |match, _rx, _tx|
-          skip_ifaces.any? do |skip|
-            match[2].split(',').include?(skip)
-          end
-        end
-        .map_to_hash do |match, rx, tx|
-          [match[1], [ifaces[rx][0].to_f, ifaces[tx][0].to_f]]
-        end
+      lines.map_to_hash do |line|
+        iface, data = line.split(':')
+        next if skip_ifaces.include? iface
+        values = data.scan(/\d+/)
+        [iface, [values[0].to_f, values[8].to_f]]
+      end
     end
   end
 
