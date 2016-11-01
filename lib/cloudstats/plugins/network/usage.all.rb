@@ -6,12 +6,14 @@ CloudStats::Sysinfo.plugin :network do
 
       skip_ifaces = %w(lo)
 
-      lines.map_to_hash do |line|
+      res = {}
+      lines.each do |line|
         iface, data = line.split(':')
         next if skip_ifaces.include? iface
         values = data.scan(/\d+/)
-        [iface, [values[0].to_f, values[8].to_f]]
+        res[iface] = [values[0].to_f, values[8].to_f]
       end
+      res
     end
   end
 
