@@ -8,6 +8,7 @@ module CloudStats
         agent_version:   CloudStats::VERSION,
         services:        sysinfo.safe_get(:services),
         cpu_usage:       sysinfo.safe_get(:cpu, :usage),
+        disk_iowait:     sysinfo.safe_get(:cpu, :iowait),
         disk_used:       sysinfo.safe_get(:disk, :used),
         disk_size:       sysinfo.safe_get(:disk, :total),
         disk_usage:      sysinfo.safe_get(:disk, :used_perc),

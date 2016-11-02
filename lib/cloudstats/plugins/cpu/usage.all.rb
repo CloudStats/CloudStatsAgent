@@ -1,7 +1,16 @@
+require 'etc'
+
 CloudStats::Sysinfo.plugin :cpu do
   os :linux do
     def fetch_stat
       File.readlines('/proc/stat').grep(/^cpu/).first.split(' ').map(&:to_f)
+    end
+
+    def fetch_iowait
+      stat = fetch_stat[1..8]
+      uptime = stat.inject(0, :+)
+      iowait = stat[4]
+      iowait/(uptime) * 100
     end
 
     before_sleep do
@@ -13,7 +22,8 @@ CloudStats::Sysinfo.plugin :cpu do
 
       @diff_used  = @proc2[1..3].inject(0, :+) - @proc1[1..3].inject(0, :+)
       @diff_total = @proc2[1..4].inject(0, :+) - @proc1[1..4].inject(0, :+)
-      { usage: 100.0 * (@diff_used / @diff_total) }
+      fetch_iowait
+      { usage: 100.0 * (@diff_used / @diff_total), iowait: fetch_iowait.round(2) }
     end
   end
 
