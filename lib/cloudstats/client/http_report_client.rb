@@ -3,10 +3,15 @@ require 'faraday'
 
 module CloudStats
   class HTTPReportClient < ReportClient
-    attr_reader :uri
+    attr_reader :uri, :http
 
     def initialize(url)
       @uri = URI.parse(url)
+
+      @http = Faraday.new(url: @uri) do |faraday|
+        faraday.request  :url_encoded             # form-encode POST params
+        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+      end
     end
 
     def send(payload)
@@ -18,17 +23,14 @@ module CloudStats
     private
 
     def send_request(data)
-      http = Faraday.new(url: uri) do |faraday|
-        faraday.request  :url_encoded             # form-encode POST params
-        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
-      end
-
       response = http.post do |req|
         req.url uri.path
         req.headers['Content-Type'] = 'application/json'
         req.body = data.to_json
       end
 
+      $logger.debug uri.path
+      # $logger.debug data
       $logger.info response
       response.body
     end
