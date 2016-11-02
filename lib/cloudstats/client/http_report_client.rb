@@ -28,7 +28,7 @@ module CloudStats
         req.headers['Content-Type'] = 'application/json'
         req.body = data.to_json
       end
-      dsa
+
       $logger.info response
       response.body
     end
