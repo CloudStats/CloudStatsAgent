@@ -80,7 +80,7 @@ begin
   end
 
 rescue StandardError, ScriptError, SecurityError => e
-  if $enable_repl || CloudStats::ENVIRONMENT == 'development'
+  if $enable_repl || ENV['CLOUDSTATS_DEBUG']
     raise e
   else
     $logger.fatal "#{e.class.name}: #{e.message}"
