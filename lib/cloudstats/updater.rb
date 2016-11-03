@@ -1,3 +1,4 @@
+require 'faraday'
 require_relative 'version.rb'
 
 module CloudStats
