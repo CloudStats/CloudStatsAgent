@@ -20,6 +20,9 @@ centos-latest-cloudstats-installer-007:
 centos-6-cloudstats-installer-007:
   build: centos-latest-cloudstats-installer-007
 
+centos-5-cloudstats-installer-007:
+  build: centos-5-cloudstats-installer-007
+
 debian-latest-cloudstats-installer-007:
   build: debian-latest-cloudstats-installer-007
 

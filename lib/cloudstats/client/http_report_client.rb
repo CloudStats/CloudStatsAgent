@@ -1,11 +1,17 @@
 require_relative './report_client'
+require 'faraday'
 
 module CloudStats
   class HTTPReportClient < ReportClient
-    attr_reader :uri
+    attr_reader :uri, :http
 
     def initialize(url)
       @uri = URI.parse(url)
+
+      @http = Faraday.new(url: @uri) do |faraday|
+        faraday.request  :url_encoded             # form-encode POST params
+        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+      end
     end
 
     def send(payload)
@@ -17,16 +23,15 @@ module CloudStats
     private
 
     def send_request(data)
-      http = Net::HTTP.new(uri.host, uri.port)
-      request = Net::HTTP::Post.new(uri.path + '?' + uri.query)
-      if uri.scheme == 'https'
-        http.use_ssl = true
-        http.ssl_version = :TLSv1_2
-        http.verify_mode = PublicConfig['verify_ssl'] ? OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE
+      response = http.post do |req|
+        req.url uri.path
+        req.headers['Content-Type'] = 'application/json'
+        req.body = data.to_json
       end
-      request.add_field('Content-Type', 'application/json')
-      request.body = data.to_json
-      response = http.request(request)
+
+      $logger.debug uri.path
+      # $logger.debug data
+      $logger.info response
       response.body
     end
   end
