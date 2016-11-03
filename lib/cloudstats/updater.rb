@@ -43,7 +43,7 @@ module CloudStats
       case @update_type
       when :restart
         $logger.info 'Restarting via :restart'
-        exec "/etc/init.d/cloudstats-agent", "restart"
+        exec '/etc/init.d/cloudstats-agent', 'restart'
       else
         $logger.info 'Restarting via :keepalive'
         exit # keepalive will start agent back
@@ -63,7 +63,7 @@ module CloudStats
     end
 
     def get_latest_version
-      (@conn.get @update_server + 'cloudstats-version').body.tr("\n", '')
+      @conn.get(@update_server + 'cloudstats-version').body.tr("\n", '')
     end
 
     def current_version
@@ -74,7 +74,7 @@ module CloudStats
       $logger.info 'Downloading latest version...'
 
       open("/tmp/#{package_name}", 'wb') do |file|
-        file << (@conn.get @update_server + package_name).body
+        file << @conn.get(@update_server + package_name).body
       end
       $logger.info 'Donwload completed'
     end
