@@ -63,7 +63,7 @@ module CloudStats
     end
 
     def get_latest_version
-      (@conn.get @update_server + 'monitoring-version').body.tr("\n", '')
+      @conn.get(@update_server + 'monitoring-version').body.tr("\n", '')
     end
 
     def current_version
@@ -74,7 +74,7 @@ module CloudStats
       $logger.info 'Downloading latest version...'
 
       open("/tmp/#{package_name}", 'wb') do |file|
-        file << (@conn.get @update_server + package_name).body
+        file << @conn.get(@update_server + package_name).body
       end
       $logger.info 'Donwload completed'
     end
