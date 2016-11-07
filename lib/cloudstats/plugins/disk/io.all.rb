@@ -23,17 +23,19 @@ CloudStats::Sysinfo.plugin :disk do
       [0, 0]
     end
 
-    before_sleep do
-      @fst = fetch
-    end
+    @prev_stat = fetch
+    @prev_time = Time.now.to_f
 
-    after_sleep do
-      @snd = fetch
+    run do
+      @cur_stat = fetch
+      @cur_time = Time.now.to_f
 
       {
-        read_speed: (@snd[0] - @fst[0]) / Config[:timeout],
-        write_speed: (@snd[1] - @fst[1]) / Config[:timeout]
+        read_speed: (@cur_stat[0] - @prev_stat[0]) / (@cur_time - @prev_time),
+        write_speed: (@cur_stat[1] - @prev_stat[1]) / (@cur_time - @prev_time)
       }
+      @prev_time = @cur_time
+      @prev_stat = @cur_stat
     end
   end
 
