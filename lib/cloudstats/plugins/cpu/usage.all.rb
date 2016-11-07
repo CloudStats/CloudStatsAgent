@@ -8,13 +8,6 @@ CloudStats::Sysinfo.plugin :cpu do
 
     @prev_stat = fetch_stat
 
-    def fetch_iowait
-      stat = fetch_stat[1..8]
-      uptime = stat.inject(0, :+)
-      iowait = stat[4]
-      iowait/(uptime) * 100
-    end
-
     run do
       @cur_stat = fetch_stat
 
