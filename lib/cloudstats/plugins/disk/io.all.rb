@@ -30,12 +30,13 @@ CloudStats::Sysinfo.plugin :disk do
       @cur_stat = fetch
       @cur_time = Time.now.to_f
 
-      {
+      res = {
         read_speed: (@cur_stat[0] - @prev_stat[0]) / (@cur_time - @prev_time),
         write_speed: (@cur_stat[1] - @prev_stat[1]) / (@cur_time - @prev_time)
       }
       @prev_time = @cur_time
       @prev_stat = @cur_stat
+      res
     end
   end
 
