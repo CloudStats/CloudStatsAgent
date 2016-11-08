@@ -1,14 +1,30 @@
+require 'json'
+
 CloudStats::Sysinfo.plugin :processes do
   HighOrderProcesses = %w(
     bash zsh fish sh ksh tmux screen sudo).map { |x| [x, "-#{x}"] }.flatten
 
   class MovingTop
-    KEEP_PROCESSES = 200
+    KEEP_PROCESSES = 15
     SEPARATOR = "\x00"
 
-    def initialize(window)
-      @graph = {}
-      @start_time = get_current_time
+    def initialize(window, path = nil)
+      @path = path.to_s
+      if File.file? @path
+        data = JSON.parse(File.read(path)) rescue {}
+        if data['graph'] and data['start_time']
+          @graph = {}
+          data['graph'].keys.each do |key|
+            @graph[key] = data['graph'][key].map { |x| [Time.at(x[0].to_i).utc, x[1]] }
+          end
+          @start_time = Time.at(data['start_time']).utc
+          loaded = true
+        end
+      end
+      unless loaded
+        @graph = {}
+        @start_time = get_current_time
+      end
       @window = window
     end
 
@@ -32,6 +48,17 @@ CloudStats::Sysinfo.plugin :processes do
       pids.each do |key|
         pid, command = key.split(SEPARATOR)
         yield pid, command, @graph[key]
+      end
+    end
+
+    def persist
+      if @path
+        clear_stale_items
+        to_write = {}
+        @graph.keys.each do |key|
+          to_write[key] = @graph[key].map { |x| [x[0].to_i, x[1]] }
+        end
+        File.write(@path, {"graph" => to_write, "start_time" => @start_time.to_i}.to_json)
       end
     end
 
@@ -146,8 +173,8 @@ CloudStats::Sysinfo.plugin :processes do
   run do
     processes = psparse
     unless @mem_top and @cpu_top
-      @mem_top = MovingTop.new(3600)
-      @cpu_top = MovingTop.new(3600)
+      @mem_top = MovingTop.new(3600 * 12, File.join(Config[:install_path], 'mem_process.data'))
+      @cpu_top = MovingTop.new(3600 * 12, File.join(Config[:install_path], 'cpu_process.data'))
     end
     mem = {}
     cpu = {}
@@ -166,6 +193,9 @@ CloudStats::Sysinfo.plugin :processes do
     @cpu_top.output do |pid, command, graph|
       top_cpu_graph << [pid, command, graph.map { |x| [x[0].to_i*1000, x[1]] } ]
     end
+
+    @mem_top.persist
+    @cpu_top.persist
 
     {
       count: processes.length,
