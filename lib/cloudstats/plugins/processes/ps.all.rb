@@ -3,7 +3,7 @@ CloudStats::Sysinfo.plugin :processes do
     bash zsh fish sh ksh tmux screen sudo).map { |x| [x, "-#{x}"] }.flatten
 
   class MovingTop
-    KEEP_PROCESSES = 200
+    KEEP_PROCESSES = 50
     SEPARATOR = "\x00"
 
     def initialize(window)
@@ -146,8 +146,8 @@ CloudStats::Sysinfo.plugin :processes do
   run do
     processes = psparse
     unless @mem_top and @cpu_top
-      @mem_top = MovingTop.new(3600)
-      @cpu_top = MovingTop.new(3600)
+      @mem_top = MovingTop.new(3600 * 12)
+      @cpu_top = MovingTop.new(3600 * 12)
     end
     mem = {}
     cpu = {}
