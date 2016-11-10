@@ -29,7 +29,6 @@ module CloudStats
         req.body = data.to_json
       end
 
-      $logger.info response
       response.body
     end
   end
