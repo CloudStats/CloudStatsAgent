@@ -5,7 +5,7 @@ module CloudStats
     attr_reader :publisher, :scheduler, :command_processor
 
     def initialize
-      CloudStats::StatsdShard.store_statsd_host
+      # CloudStats::StatsdShard.store_statsd_host
       @publisher = Publisher.new
       @scheduler = create_scheduler
       @command_processor = CommandProcessor.new

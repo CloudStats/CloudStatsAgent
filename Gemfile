@@ -11,6 +11,8 @@ gem 'sentry-raven'
 gem 'statsd-ruby', github: 'otzy007/statsd'
 gem 'bunny'
 
+gem 'faraday'
+
 group :development, :test do
   gem 'rspec'
   gem 'webmock'

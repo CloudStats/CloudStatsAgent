@@ -306,6 +306,7 @@ DEPENDENCIES
   backup (~> 4.1.1)!
   bunny
   bytes_converter
+  faraday
   nokogiri (= 1.6.6.2)
   ps-ruby
   ripl
