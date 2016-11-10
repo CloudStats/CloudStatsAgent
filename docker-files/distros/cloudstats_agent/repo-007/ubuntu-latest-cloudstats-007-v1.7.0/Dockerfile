@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install vim curl -y
+RUN apt-get update && apt-get install curl -y
 
 RUN mkdir /home/cloudstats_agent
 WORKDIR /home/cloudstats_agent

@@ -1,3 +1,5 @@
+require 'timeout'
+
 CloudStats::Sysinfo.plugin :os do
   os :osx do
     after_sleep do # after_sleep as it takes too much time
@@ -24,18 +26,35 @@ CloudStats::Sysinfo.plugin :os do
       `yum check-update`.each_line.grep(finder).count
     end
 
-    after_sleep do
-      pending_updates = if has? 'apt-get'
-                          aptget
-                        elsif has? 'pacman'
-                          pacman
-                        elsif has? 'yum'
-                          yum
-                        else
-                          0
-                        end
+    def get_updates_with_timeout
+      pending_updates = nil
+      Timeout::timeout(5) do
+        pending_updates = if has? 'apt-get'
+                            aptget
+                          elsif has? 'pacman'
+                            pacman
+                          elsif has? 'yum'
+                            yum
+                          else
+                            0
+                          end
+      end rescue nil
+      pending_updates
+    end
 
-      { pending_updates: pending_updates }
+    @last_check = nil
+    @pending_updates = 0
+
+    after_sleep do
+      cur_time = Time.now
+      if !@last_check or (cur_time - @last_check >= 3600)
+        cur_updates = get_updates_with_timeout
+        if cur_updates
+          @pending_updates = cur_updates
+          @last_check = cur_time
+        end
+      end
+      { pending_updates: @pending_updates }
     end
   end
 end

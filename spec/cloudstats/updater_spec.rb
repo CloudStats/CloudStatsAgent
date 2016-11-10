@@ -8,7 +8,7 @@ describe CloudStats::Updater do
 
   it 'should get the latest version from the server' do
     stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-version")
-      .with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'})
+      .with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Faraday v0.8.8'})
       .to_return(:status => 200, :body => "0.1.1", :headers => {})
 
     expect(CloudStats::Updater.new.send(:get_latest_version)).to eq('0.1.1')
@@ -18,7 +18,7 @@ describe CloudStats::Updater do
     file_content = 'lol'
 
     stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/package_name").
-         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Faraday v0.8.8'}).
          to_return(:status => 200, :body => file_content, :headers => {})
 
     CloudStats::Updater.new.send(:download, 'package_name')
@@ -59,11 +59,11 @@ describe CloudStats::Updater do
 
   it 'should update the app' do
     stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-version").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Faraday v0.8.8'}).
         to_return(:status => 200, :body => "100.0.1.1", :headers => {})
 
     stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-agent-100.0.1.1-linux-x86_64.tar.gz").
-         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Faraday v0.8.8'}).
          to_return(:status => 200, :body => File.read('spec/fixtures/cloudstats-agent-100.0.1.1-linux-x86_64.tar.gz'), :headers => {})
 
     app_dir = '/tmp/cloudstats-agent-100.0.1.1-linux-x86_64'
@@ -84,7 +84,7 @@ describe CloudStats::Updater do
 
   it 'should send a message when using the same version' do
     stub_request(:get, "https://cloudstatsstorage.blob.core.windows.net/agent/cloudstats-version").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Faraday v0.8.8'}).
         to_return(:status => 200, :body => "0.0.1.1", :headers => {})
 
     expect(CloudStats::Updater.new.update).to be false

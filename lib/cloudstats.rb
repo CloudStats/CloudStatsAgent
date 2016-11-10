@@ -63,7 +63,7 @@ begin
     publisher.publish(:http)
     # publisher.publish(:statsd)
 
-    CloudStats::StatsdShard.store_statsd_host
+    # CloudStats::StatsdShard.store_statsd_host
 
   when '--command-processor'
     CloudStats::CommandProcessor.new(block: true).run
@@ -80,7 +80,7 @@ begin
   end
 
 rescue StandardError, ScriptError, SecurityError => e
-  if $enable_repl
+  if $enable_repl || ENV['CLOUDSTATS_DEBUG']
     raise e
   else
     $logger.fatal "#{e.class.name}: #{e.message}"
