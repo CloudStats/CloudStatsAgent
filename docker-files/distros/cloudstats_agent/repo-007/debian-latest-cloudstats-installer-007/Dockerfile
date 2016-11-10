@@ -1,6 +1,6 @@
 FROM debian:latest
 
-RUN apt-get update && apt-get install vim curl -y
+RUN apt-get update && apt-get install curl -y
 
 RUN bash -lc "curl https://cloudstatsstorage.blob.core.windows.net/agent007/installer | bash -s cmBS5j5hvkrc-0mv2uLVtol8kdhAzw4uAVSy9QrbSRUBCKtRyK5-jzfisrDUfntmQpgkNupCQPu5GIG23be1FXw"
 RUN echo 'repo: agent007' >> /home/cloudstats_agent/config.yml
