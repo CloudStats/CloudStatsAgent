@@ -63,7 +63,7 @@ module CloudStats
     end
 
     def get_latest_version
-      @conn.get(@update_server + 'cloudstats-version').body.tr("\n", '')
+      @conn.get(@update_server + 'monitoring-version').body.tr("\n", '')
     end
 
     def current_version
