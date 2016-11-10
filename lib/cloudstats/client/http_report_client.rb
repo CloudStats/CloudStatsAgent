@@ -29,8 +29,6 @@ module CloudStats
         req.body = data.to_json
       end
 
-      $logger.debug uri.path
-      # $logger.debug data
       $logger.info response
       response.body
     end
