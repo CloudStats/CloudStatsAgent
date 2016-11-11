@@ -1,5 +1,5 @@
 require 'backup'
-require 'net/http'
+require 'faraday'
 require 'singleton'
 
 module CloudStats
@@ -8,6 +8,11 @@ module CloudStats
 
     def initialize
       @config_dir = "#{File.expand_path(File.dirname(__FILE__))}/../../Backup"
+
+      @http = Faraday.new(url: @uri) do |faraday|
+        faraday.request  :url_encoded             # form-encode POST params
+        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+      end
 
       Dir.mkdir @config_dir unless File.exist?(@config_dir)
     end
@@ -41,7 +46,7 @@ module CloudStats
       backup_config_link = "#{server_link}?key=#{PublicConfig['key']}"
 
       open("#{@config_dir}/config.rb", 'w') do |file|
-        file << open(backup_config_link).read
+        file << @http.get(backup_config_link).body
       end
 
       $logger.info 'Backup config file downoloaded'
