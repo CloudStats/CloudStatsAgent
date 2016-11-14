@@ -81,6 +81,10 @@ CloudStats::Sysinfo.plugin :processes do
       move_start_time
       @graph.keys.each do |key|
         index = nil
+        if @graph[key].nil?
+          @graph.delete(key)
+          next
+        end
         @graph[key].each_with_index do |point, i|
           if point[0] >= @start_time
             index = i
