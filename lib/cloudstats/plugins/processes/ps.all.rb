@@ -86,7 +86,7 @@ CloudStats::Sysinfo.plugin :processes do
         end
         if index && index > 0
           @graph[key] = @graph[key][index..-1]
-        elsif not index
+        elsif index.nil?
           @graph.delete(key)
         end
       end
