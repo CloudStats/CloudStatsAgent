@@ -2,17 +2,22 @@ require 'json'
 
 CloudStats::Sysinfo.plugin :processes do
   HighOrderProcesses = %w(
-    bash zsh fish sh ksh tmux screen sudo).map { |x| [x, "-#{x}"] }.flatten
+    bash zsh fish sh ksh tmux screen sudo
+  ).map { |x| [x, "-#{x}"] }.flatten
 
   class MovingTop
     KEEP_PROCESSES = 15
-    SEPARATOR = "\x00"
+    SEPARATOR = "\x00".freeze
 
     def initialize(window, path = nil)
       @path = path.to_s
       if File.file? @path
-        data = JSON.parse(File.read(path)) rescue {}
-        if data['graph'] and data['start_time']
+        data = begin
+                 JSON.parse(File.read(path))
+               rescue
+                 {}
+               end
+        if data['graph'] && data['start_time']
           @graph = {}
           data['graph'].keys.each do |key|
             @graph[key] = data['graph'][key].map { |x| [Time.at(x[0].to_i).utc, x[1]] }
@@ -33,15 +38,13 @@ CloudStats::Sysinfo.plugin :processes do
       insert_time = get_current_time
       pids.keys.each do |pid|
         key = pid.to_s + SEPARATOR + pids[pid][:command]
-        unless @graph[key]
-          @graph[key] = []
-        end
+        @graph[key] = [] unless @graph[key]
 
         @graph[key] << [insert_time, pids[pid][:value].to_f]
       end
     end
 
-    def output(top = 5, &block)
+    def output(top = 5)
       clear_stale_items
       pids = get_top(top)
 
@@ -58,7 +61,7 @@ CloudStats::Sysinfo.plugin :processes do
         @graph.keys.each do |key|
           to_write[key] = @graph[key].map { |x| [x[0].to_i, x[1]] }
         end
-        File.write(@path, {"graph" => to_write, "start_time" => @start_time.to_i}.to_json)
+        File.write(@path, { 'graph' => to_write, 'start_time' => @start_time.to_i }.to_json)
       end
     end
 
@@ -71,22 +74,26 @@ CloudStats::Sysinfo.plugin :processes do
           sum += point[1]
         end
         [pid, sum / @graph[pid].length]
-      end.sort { |x,y| y[1] <=> x[1] }[0..top - 1].map(&:first)
+      end.sort { |x, y| y[1] <=> x[1] }[0..top - 1].map(&:first)
     end
 
     def clear_stale_items
       move_start_time
       @graph.keys.each do |key|
         index = nil
+        if @graph[key].nil?
+          @graph.delete(key)
+          next
+        end
         @graph[key].each_with_index do |point, i|
           if point[0] >= @start_time
             index = i
             break
           end
         end
-        if index and index > 0
+        if index && index > 0
           @graph[key] = @graph[key][index..-1]
-        elsif not index
+        elsif index.nil?
           @graph.delete(key)
         end
       end
@@ -100,16 +107,13 @@ CloudStats::Sysinfo.plugin :processes do
 
     def move_start_time
       new_time = get_current_time - @window
-      if new_time > @start_time
-        @start_time = new_time
-      end
+      @start_time = new_time if new_time > @start_time
     end
 
     def get_current_time
       ret = Time.now.utc + 5
       ret -= ret.sec
     end
-
   end
 
   def psparse
@@ -125,7 +129,7 @@ CloudStats::Sysinfo.plugin :processes do
           cpu:     pr[3],
           mem:     pr[4],
           vsz:     pr[5],
-          command: pr[6].gsub('.', '_').split(' ').first
+          command: pr[6].tr('.', '_').split(' ').first
         }
       end.delete_if { |h| h[:ppid] == '2' || h[:pid] == '2' }
   end
@@ -157,7 +161,7 @@ CloudStats::Sysinfo.plugin :processes do
         children = pr.delete(:children)
         if /cloudstats/ =~ pr[:command]
           []
-        elsif children.size == 0
+        elsif children.size.zero?
           pr
         elsif /\Ainit\s?(\[\d+\])?\Z/ =~ pr[:command]
           psflatten(children)
@@ -172,26 +176,26 @@ CloudStats::Sysinfo.plugin :processes do
 
   run do
     processes = psparse
-    unless @mem_top and @cpu_top
+    unless @mem_top && @cpu_top
       @mem_top = MovingTop.new(3600 * 12, File.join(Config[:install_path], 'mem_process.data'))
       @cpu_top = MovingTop.new(3600 * 12, File.join(Config[:install_path], 'cpu_process.data'))
     end
     mem = {}
     cpu = {}
     processes.each do |process|
-      mem[process[:pid]] = {value: process[:mem], command: process[:command]}
-      cpu[process[:pid]] = {value: process[:cpu], command: process[:command]}
+      mem[process[:pid]] = { value: process[:mem], command: process[:command] }
+      cpu[process[:pid]] = { value: process[:cpu], command: process[:command] }
     end
     @mem_top.insert(mem)
     @cpu_top.insert(cpu)
 
     top_mem_graph = []
     @mem_top.output do |pid, command, graph|
-      top_mem_graph << [pid, command, graph.map { |x| [x[0].to_i*1000, x[1]] } ]
+      top_mem_graph << [pid, command, graph.map { |x| [x[0].to_i * 1000, x[1]] }]
     end
     top_cpu_graph = []
     @cpu_top.output do |pid, command, graph|
-      top_cpu_graph << [pid, command, graph.map { |x| [x[0].to_i*1000, x[1]] } ]
+      top_cpu_graph << [pid, command, graph.map { |x| [x[0].to_i * 1000, x[1]] }]
     end
 
     @mem_top.persist
