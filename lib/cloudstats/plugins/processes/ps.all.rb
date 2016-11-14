@@ -172,7 +172,7 @@ CloudStats::Sysinfo.plugin :processes do
 
   run do
     processes = psparse
-    unless @mem_top and @cpu_top
+    unless @mem_top && @cpu_top
       @mem_top = MovingTop.new(3600 * 12, File.join(Config[:install_path], 'mem_process.data'))
       @cpu_top = MovingTop.new(3600 * 12, File.join(Config[:install_path], 'cpu_process.data'))
     end
