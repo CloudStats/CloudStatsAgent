@@ -30,7 +30,7 @@ CloudStats::Sysinfo.plugin :os do
       pid = nil
       output = ""
       aborted = false
-      Timeout::timeout(5) do
+      Timeout::timeout(30) do
         process = IO.popen(command, 'r', :err => [:child, :out]) do |io|
           pid = io.pid
           while true
@@ -54,7 +54,7 @@ CloudStats::Sysinfo.plugin :os do
 
     def get_updates_with_timeout
       pending_updates = nil
-      Timeout::timeout(5) do
+      Timeout::timeout(30) do
         pending_updates = if has? 'apt-get'
                             aptget
                           elsif has? 'pacman'
