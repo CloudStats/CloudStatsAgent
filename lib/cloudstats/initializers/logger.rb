@@ -20,12 +20,11 @@ module CloudStats
 
     def initialize
       logfile = begin
-                  open('/var/log/cloudstats.log', 'a')
+                  LogDevice.new('/var/log/cloudstats.log', shift_age: 5, shift_size: 10485760, shift_period_suffix: '%Y%m%d')
                 rescue
                   nil
                 end
-      logfile = open('./cloudstats.log', 'a') unless logfile
-      logfile.sync = true
+      logfile = LogDevice.new('./cloudstats.log', shift_age: 5, shift_size: 10485760, shift_period_suffix: '%Y%m%d') unless logfile
 
       super(TeeIO.new(STDOUT, logfile))
     end
