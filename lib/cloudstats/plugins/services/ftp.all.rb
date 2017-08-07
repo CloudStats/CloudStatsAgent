@@ -6,4 +6,5 @@ CloudStats::Sysinfo.plugin :services do
   require_process :proftpd
   require_process 'pure-ftpd'
   require_process 'pro-ftpd'
+  require_process 'vsftpd'
 end
